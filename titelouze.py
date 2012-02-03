@@ -1,4 +1,5 @@
 # coding: utf-8
+
 '''
 Titelouze
 Bertrand Bordage © 2011
@@ -9,6 +10,7 @@ Its goal is to provide an easy way to create large music books.
 
 import subprocess, sys, re, os
 from settings import *
+from contexts import *
 
 class LilyPond:
     def launch(self, *args, **kwargs):
@@ -82,6 +84,14 @@ if __name__ == '__main__':
     titelouze = Titelouze()
     version = lilypond.get_version()
     lines = titelouze.replace_tags('templates/base.ily')
+    book = Book()
+    bookpart = BookPart()
+    book.add(bookpart)
+    score = Score()
+    book.add(score)
+    score.add(Staff())
+    score.add(Staff())
+    lines += book.output()
     titelouze.output('out.ly', lines)
     lilypond.launch('out.ly', verbose=True)
 
