@@ -1,4 +1,5 @@
 TAGS_PATTERN = '{{ (\S+) }}'
+LILYPOND_VERSION_PATTERN = 'GNU LilyPond ([0-9\.]+)'
 LILYPOND_PATH = ''
 LILYPOND_COMMAND = LILYPOND_PATH + 'lilypond'
 

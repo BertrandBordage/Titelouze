@@ -11,11 +11,11 @@ class LilyPond:
         p = subprocess.Popen(args=command, stdout=subprocess.PIPE,
             stderr=subprocess.STDOUT, shell=False)
         p.wait()
-        return p.stdout.readlines()
+        return ''.join(p.stdout.readlines())
     def get_version(self):
-        lines = ''.join(self.launch('version'))
+        lines = self.launch('version')
         try:
-            return re.findall('GNU LilyPond ([0-9\.]+)', lines, flags=re.M)[0]
+            return re.findall(LILYPOND_VERSION_PATTERN, lines)[0]
         except:
             raise Exception('unable to locate version number')
 
