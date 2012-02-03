@@ -49,7 +49,7 @@ class LilyPond:
 
 class Titelouze:
     def __init__(self):
-        self.tags_object = re.compile(TAGS_PATTERN)
+        self.tags_object = re.compile(TITELOUZE_TAG_PATTERN)
     def replace_tags(self, filename):
         '''
         Replaces template tags with the corresponding values.
