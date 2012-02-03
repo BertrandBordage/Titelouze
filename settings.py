@@ -1,0 +1,4 @@
+TAGS_PATTERN = '{{ (\S+) }}'
+LILYPOND_PATH = ''
+LILYPOND_COMMAND = LILYPOND_PATH + 'lilypond'
+
