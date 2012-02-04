@@ -11,6 +11,7 @@ Its goal is to provide an easy way to create large music books.
 import subprocess, sys, re, os
 from settings import *
 from contexts import *
+from instruments import *
 
 class LilyPond:
     def launch(self, *args, **kwargs):
@@ -89,8 +90,7 @@ if __name__ == '__main__':
     book.add(bookpart)
     score = Score()
     book.add(score)
-    score.add(Staff())
-    score.add(Staff())
+    score.add(Organ())
     lines += book.output()
     titelouze.output('out.ly', lines)
     lilypond.launch('out.ly', verbose=True)
