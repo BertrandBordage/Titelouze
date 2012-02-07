@@ -17,6 +17,7 @@ class Context:
     has_new = True
     allow_simultaneous_music = True
     instance_name = None
+    mode = ''
     def __setattr__(self, name, value):
         self.__dict__[name] = value
     def add(self, context):
@@ -50,7 +51,7 @@ class Context:
         out += '\n'
         indent += 1
         out += self.output_properties(indent)
-        out += INDENT_UNIT * indent + self.tags()[0] + '\n'
+        out += INDENT_UNIT * indent + self.mode + ' ' + self.tags()[0] + '\n'
         new_indent = indent + 1
         if not self.contexts:
             out += INDENT_UNIT * (new_indent) + self.message
@@ -76,6 +77,7 @@ class Lyrics(Context):
         if self.associated_instance:
             self.properties.update(associatedVoice=self.associated_instance)
     name = 'Lyrics'
+    mode = '\lyricmode'
 
 class Voice(Context):
     name = 'Voice'
