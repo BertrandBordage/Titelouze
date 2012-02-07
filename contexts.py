@@ -27,17 +27,17 @@ class Context:
             return SIMULTANEOUS_MUSIC_TAGS
         return SEQUENTIAL_MUSIC_TAGS
     def output_properties(self, indent=0):
-        try:
-            out = ''
-            c = self.name
+        if self.properties:
+            out = INDENT_UNIT * indent + '\\with {\n'
+            indent += 1
             props = self.properties
             for key in props:
                 out += INDENT_UNIT * indent
                 value = py2scm(props[key])
-                out += '\\set %s.%s = %s\n' % (c, key, value)
+                out += '%s = %s\n' % (key, value)
+            out += INDENT_UNIT * (indent-1) + '}\n'
             return out
-        except:
-            return ''
+        return ''
     def open_tag(self, indent=0):
         out = INDENT_UNIT * indent + '\\'
         if self.has_new:
@@ -46,11 +46,11 @@ class Context:
                 out += ' = "%s"' % self.instance_name
         else:
             out += self.name.lower()
-        out += ' '
-        out += self.tags()[0]
         out += '\n'
+        indent += 1
+        out += self.output_properties(indent)
+        out += INDENT_UNIT * indent + self.tags()[0] + '\n'
         new_indent = indent + 1
-        out += self.output_properties(new_indent)
         if not self.contexts:
             out += INDENT_UNIT * (new_indent) + self.message
         return out, new_indent
@@ -63,7 +63,7 @@ class Context:
         out, new_indent = self.open_tag(indent)
         for context in self.contexts:
             out += context.output(new_indent)
-        out += self.close_tag(indent)
+        out += self.close_tag(indent+1)
         return out
 
 class Dynamics(Context):
