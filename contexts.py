@@ -15,6 +15,8 @@ class Context:
     name = 'Context'
     has_new = True
     allow_simultaneous_music = True
+    def __setattr__(self, name, value):
+        self.__dict__[name] = value
     def add(self, context):
         self.contexts.append(context)
     def is_simultaneous(self):
@@ -71,7 +73,16 @@ class Staff(Context):
     name = 'Staff'
 
 class Group(Context):
+    def __init__(self):
+        try:
+            Context.__init__(self)
+        except AttributeError:
+            pass
     name = 'Group'
+    def __setattr__(self, name, value):
+        if name == 'properties':
+            raise AttributeError('"Group" is a fake context.  One cannot use "%s" with it.' % name)
+        return Context.__setattr__(self, name, value)
     def open_tag(self, indent):
         return INDENT_UNIT * indent + SIMULTANEOUS_MUSIC_TAGS[0] + '\n', indent
     def close_tag(self, indent):

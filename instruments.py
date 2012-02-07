@@ -118,6 +118,4 @@ class Organ(Group):
     def __init__(self):
         Group.__init__(self)
         self.contexts = [Keyboards(), Pedal()]
-        self.properties.update(instrumentName='Organ',
-                               shortInstrumentName='Or.')
 
