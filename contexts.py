@@ -8,10 +8,11 @@ from settings import *
 from macros import *
 
 class Context:
-    def __init__(self):
+    def __init__(self, associated=''):
         self.contexts = []
         self.properties = {}
         self.message = COMMENT_TAG + 'Write here the content of this %s.' % self.name.lower() + '\n'
+        self.associated_instance = associated
     name = 'Context'
     has_new = True
     allow_simultaneous_music = True
@@ -68,6 +69,13 @@ class Context:
 
 class Dynamics(Context):
     name = 'Dynamics'
+
+class Lyrics(Context):
+    def __init__(self, *args, **kwargs):
+        Context.__init__(self, *args, **kwargs)
+        if self.associated_instance:
+            self.properties.update(associatedVoice=self.associated_instance)
+    name = 'Lyrics'
 
 class Voice(Context):
     name = 'Voice'
