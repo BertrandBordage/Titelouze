@@ -44,7 +44,7 @@ class Bass(VoiceStaff):
         VoiceStaff.__init__(self)
         self.properties.update(instrumentName='Bass',
                                shortInstrumentName='B.')
-    clef = 'G'
+    clef = 'F'
 
 # Strings
 
