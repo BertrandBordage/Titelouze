@@ -15,6 +15,7 @@ class Context:
     name = 'Context'
     has_new = True
     allow_simultaneous_music = True
+    instance_name = None
     def __setattr__(self, name, value):
         self.__dict__[name] = value
     def add(self, context):
@@ -41,6 +42,8 @@ class Context:
         out = INDENT_UNIT * indent + '\\'
         if self.has_new:
             out += 'new ' + self.name
+            if self.instance_name:
+                out += ' = "%s"' % self.instance_name
         else:
             out += self.name.lower()
         out += ' '
