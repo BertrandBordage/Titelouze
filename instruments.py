@@ -12,26 +12,26 @@ from contexts import *
 
 # Voices
 
-class Voice(Staff):
+class VoiceStaff(Staff):
     properties = {'instrumentName': 'Voice',
-                  'shortInstrumentName': 'Vo.'}
+                  'shortInstrumentName': 'Vo.',
+                  'autoBeaming': False}
     clef = 'G'
-    autoBeaming = False
 
-class Soprano(Voice):
+class Soprano(VoiceStaff):
     properties = {'instrumentName': 'Soprano',
                   'shortInstrumentName': 'S.'}
 
-class Contralto(Voice):
+class Contralto(VoiceStaff):
     properties = {'instrumentName': 'Contralto',
                   'shortInstrumentName': 'A.'}
 
-class Tenore(Voice):
+class Tenore(VoiceStaff):
     properties = {'instrumentName': 'Tenore',
                   'shortInstrumentName': 'T.'}
     clef = 'G_8'
 
-class Bass(Voice):
+class Bass(VoiceStaff):
     properties = {'instrumentName': 'Bass',
                   'shortInstrumentName': 'B.'}
     clef = 'G'

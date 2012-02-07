@@ -95,12 +95,14 @@ class Score(Context):
         out, indent = Context.open_tag(self, indent)
         if self.is_simultaneous():
             indent += 1
-            out += Group.open_tag(self, indent)
+            new_tag = Group().open_tag(indent)
+            out += new_tag[0]
+            indent = new_tag[1]
         return out, indent
     def close_tag(self, indent=0):
         out = ''
         if self.is_simultaneous():
-            out += Group.close_tag(self, indent+1)
+            out += Group().close_tag(indent+1)
         out += Context.close_tag(self, indent)
         return out
 
