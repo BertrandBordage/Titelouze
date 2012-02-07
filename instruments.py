@@ -80,6 +80,8 @@ class Contrabass(Staff):
 # Multiple staves instruments
 #
 
+# Keyboards
+
 class Keyboard(PianoStaff):
     def __init__(self):
         PianoStaff.__init__(self)
@@ -98,6 +100,12 @@ class Piano(Keyboard):
         Keyboard.__init__(self)
         self.properties.update(instrumentName='Piano',
                                shortInstrumentName='Pi.')
+
+class Harpsichord(Keyboard):
+    def __init__(self):
+        Keyboard.__init__(self)
+        self.properties.update(instrumentName='Harpsichord',
+                               shortInstrumentName='Hc.')
 
 class Pedal(Staff):
     def __init__(self):
