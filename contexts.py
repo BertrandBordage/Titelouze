@@ -10,11 +10,11 @@ from macros import *
 class Context:
     def __init__(self):
         self.contexts = []
+        self.properties = {}
         self.message = COMMENT_TAG + 'Write here the content of this %s.' % self.name.lower() + '\n'
     name = 'Context'
     has_new = True
     allow_simultaneous_music = True
-    ambiguous = False
     def add(self, context):
         self.contexts.append(context)
     def is_simultaneous(self):
@@ -90,7 +90,6 @@ class Score(Context):
     name = 'Score'
     has_new = False
     allow_simultaneous_music = False
-    ambiguous = True
     def open_tag(self, indent=0):
         out, indent = Context.open_tag(self, indent)
         if self.is_simultaneous():

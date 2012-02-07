@@ -91,7 +91,7 @@ if __name__ == '__main__':
     score = Score()
     book.add(score)
     score.add(Organ())
-    score.add(Voice())
+    score.add(VoiceStaff())
     lines += book.output()
     titelouze.output('out.ly', lines)
     lilypond.launch('out.ly', verbose=True)
