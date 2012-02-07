@@ -8,9 +8,10 @@ from settings import *
 from macros import *
 
 class Context:
-    def __init__(self, associated=''):
+    def __init__(self, associated='', **kwargs):
         self.contexts = []
         self.properties = {}
+        self.properties.update(kwargs)
         self.message = COMMENT_TAG + 'Write here the content of this %s.' % self.name.lower() + '\n'
         self.associated_instance = associated
     name = 'Context'
@@ -86,9 +87,9 @@ class Staff(Context):
     name = 'Staff'
 
 class Group(Context):
-    def __init__(self):
+    def __init__(self, *args, **kwargs):
         try:
-            Context.__init__(self)
+            Context.__init__(self, *args, **kwargs)
         except AttributeError:
             pass
     name = 'Group'
