@@ -15,43 +15,43 @@ from contexts import *
 class VoiceStaff(Group):
     def __init__(self, *args, **kwargs):
         Group.__init__(self, *args, **kwargs)
-        self.contexts = [Staff(instrumentName='Voice',
-                               shortInstrumentName='Vo.',
-                               autoBeaming=False),
-                         Lyrics('voice')]
+        self.add(Staff(instrumentName='Voice',
+                       shortInstrumentName='Vo.',
+                       autoBeaming=False),
+                 Lyrics('voice'))
 
-class Soprano(VoiceStaff):
+class Soprano(Group):
     def __init__(self, *args, **kwargs):
         Group.__init__(self, *args, **kwargs)
-        self.contexts = [Staff(instrumentName='Soprano',
-                               shortInstrumentName='S.',
-                               autoBeaming=False),
-                         Lyrics('soprano')]
+        self.add(Staff(instrumentName='Soprano',
+                       shortInstrumentName='S.',
+                       autoBeaming=False),
+                 Lyrics('soprano'))
 
-class Contralto(VoiceStaff):
+class Contralto(Group):
     def __init__(self, *args, **kwargs):
         Group.__init__(self, *args, **kwargs)
-        self.contexts = [Staff(instrumentName='Contralto',
-                               shortInstrumentName='A.',
-                               autoBeaming=False),
-                         Lyrics('contralto')]
+        self.add(Staff(instrumentName='Contralto',
+                       shortInstrumentName='A.',
+                       autoBeaming=False),
+                 Lyrics('contralto'))
 
-class Tenore(VoiceStaff):
+class Tenore(Group):
     def __init__(self, *args, **kwargs):
         Group.__init__(self, *args, **kwargs)
-        self.contexts = [Staff(instrumentName='Tenore',
-                               shortInstrumentName='T.',
-                               autoBeaming=False),
-                         Lyrics('tenore')]
+        self.add(Staff(instrumentName='Tenore',
+                       shortInstrumentName='T.',
+                       autoBeaming=False),
+                 Lyrics('tenore'))
     clef = 'G_8'
 
-class Bass(VoiceStaff):
+class Bass(Group):
     def __init__(self, *args, **kwargs):
         Group.__init__(self, *args, **kwargs)
-        self.contexts = [Staff(instrumentName='Bass',
-                               shortInstrumentName='B.',
-                               autoBeaming=False),
-                         Lyrics('bass')]
+        self.add(Staff(instrumentName='Bass',
+                       shortInstrumentName='B.',
+                       autoBeaming=False),
+                 Lyrics('bass'))
     clef = 'F'
 
 # Strings
@@ -97,7 +97,7 @@ class Contrabass(Staff):
 class Keyboard(PianoStaff):
     def __init__(self):
         PianoStaff.__init__(self)
-        self.contexts = [Staff(), Dynamics(), Staff()]
+        self.add(Staff(), Dynamics(), Staff())
         self.properties.update(instrumentName='Keyboard',
                                shortInstrumentName='K.')
     instance_name = 'keyboard'
@@ -134,6 +134,6 @@ class Pedal(Staff):
 class Organ(Group):
     def __init__(self):
         Group.__init__(self)
-        self.contexts = [Keyboards(), Pedal()]
+        self.add(Keyboards(), Pedal())
     instance_name = 'organ'
 

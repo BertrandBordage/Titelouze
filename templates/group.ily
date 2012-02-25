@@ -1,3 +1,2 @@
 <<
-{{ self.content }}
->>
+{{ self.content }}>>

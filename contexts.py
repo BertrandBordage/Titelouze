@@ -26,9 +26,10 @@ class Context:
     mode = ''
     def __setattr__(self, name, value):
         self.__dict__[name] = value
-    def add(self, context):
-        context.indent = self.indent + 1
-        self.contexts.append(context)
+    def add(self, *contexts):
+        for context in contexts:
+            context.indent = self.indent + 1
+        self.contexts.extend(contexts)
     def is_simultaneous(self):
         return len(self.contexts) > 1
     def tags(self):
@@ -75,7 +76,7 @@ class Context:
             cl = cl.__bases__[0]
         out = replace_tags(path+filename, locals())
         ind = '\n' + INDENT_UNIT * self.indent
-        out = ind[2:] + ind.join(re.split('\s?\n', out)) # indent & remove trailing whitespaces
+        out = ind[1:] + ind.join(re.split('\s?\n', out)) # indent & remove trailing whitespaces
         return out
     def __unicode__(self):
         return self.output()
