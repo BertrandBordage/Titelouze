@@ -10,9 +10,9 @@ Its goal is to provide an easy way to create large music books.
 
 import subprocess, sys, re, os
 from settings import *
+from macros import *
 from contexts import *
 from instruments import *
-from types import MethodType
 
 class LilyPond:
     def launch(self, filename, *args, **kwargs):
@@ -52,7 +52,7 @@ class LilyPond:
 
 class Titelouze:
     lilypond = LilyPond()
-    tags_object = re.compile(TITELOUZE_TAG_PATTERN)
+    book = Book()
     def __init__(self):
         self.lilypond_version = lilypond.get_version()
     def launch_lilypond(self, filename='out.ly', *args, **kwargs):
@@ -65,53 +65,17 @@ class Titelouze:
     def compile_preview(self, *args, **kwargs):
         kwargs['define-default'] = 'preview'
         self.launch_lilypond(*args, **kwargs)
-    def replace_tags(self, filename):
-        '''
-        Opens filename.
-        Replaces template tags with the corresponding values.
-        Returns the updated content of filename.
-        '''
-        f = open(filename, 'r')
-        lines = ''.join(f.readlines())
-        f.close()
-        tags = self.tags_object.split(lines)
-        out = ''
-        for i, tag in enumerate(tags):
-            if i % 2:
-                try:
-                    attrs = re.split('\.', tag)
-                    var = locals()[attrs[0]]
-                    for attr in attrs[1:]:
-                        var = getattr(var, attr)
-                    if type(var) is MethodType:
-                        var = var()
-                    out += unicode(var)
-                except:
-                    raise UnboundLocalError('unbound variable "%s"' % tag)
-            else:
-                out += tag
-        return out
-    def output(self, filename, lines):
-        '''
-        Saves "lines" in the file named "filename".
-        '''
-        dir = os.path.dirname(filename)
-        if dir and not os.path.exists(dir):
-            os.makedirs(dir)
-        f = open(filename, 'w')
-        f.writelines(lines)
-        f.close()
+    def output(self):
+        lines = replace_tags('templates/base.ily', locals())
+        write_to_file('out.ly', lines)
+        self.compile_pdf(verbose=True)
 
 if __name__ == '__main__':
     lilypond = LilyPond()
     t = Titelouze()
-    t.book = Book()
     score = Score()
     t.book.add(score)
     score.add(Organ())
     score.add(Contralto())
-    lines = t.replace_tags('templates/base.ily')
-    t.output('out.ly', lines)
-    t.compile_pdf(verbose=True)
-    t.compile_png()
+    t.output()
 
