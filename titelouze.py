@@ -15,7 +15,7 @@ from instruments import *
 from types import MethodType
 
 class LilyPond:
-    def launch(self, *args, **kwargs):
+    def launch(self, filename, *args, **kwargs):
         '''
         Launches LilyPond with raw args and kwargs passed as "--[key]=[value]".
         Returns the output.
@@ -29,6 +29,7 @@ class LilyPond:
             command.append(arg)
         for key in kwargs:
             command.append('--'+key+'='+kwargs[key])
+        command.append(filename)
         p = subprocess.Popen(args=command, stdout=subprocess.PIPE,
             stderr=subprocess.STDOUT, shell=False)
         lines = ''
@@ -54,6 +55,16 @@ class Titelouze:
     tags_object = re.compile(TITELOUZE_TAG_PATTERN)
     def __init__(self):
         self.lilypond_version = lilypond.get_version()
+    def launch_lilypond(self, filename='out.ly', *args, **kwargs):
+        self.lilypond.launch(filename, *args, **kwargs)
+    def compile_pdf(self, *args, **kwargs):
+        self.launch_lilypond(*args, **kwargs)
+    def compile_png(self, *args, **kwargs):
+        kwargs['format'] = 'png'
+        self.launch_lilypond(*args, **kwargs)
+    def compile_preview(self, *args, **kwargs):
+        kwargs['define-default'] = 'preview'
+        self.launch_lilypond(*args, **kwargs)
     def replace_tags(self, filename):
         '''
         Opens filename.
@@ -101,5 +112,6 @@ if __name__ == '__main__':
     score.add(Contralto())
     lines = t.replace_tags('templates/base.ily')
     t.output('out.ly', lines)
-    t.lilypond.launch('out.ly', verbose=True)
+    t.compile_pdf(verbose=True)
+    t.compile_png()
 
