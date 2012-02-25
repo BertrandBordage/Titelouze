@@ -6,7 +6,7 @@ Useful functions that can't be placed somewhere else.
 
 import re, os
 from settings import TITELOUZE_TAG_PATTERN
-from types import MethodType
+from types import FunctionType, MethodType, BuiltinFunctionType, BuiltinMethodType
 
 def py2scm (py):
     '''
@@ -39,16 +39,14 @@ def replace_tags(filename, parent_locals):
     out = ''
     for i, tag in enumerate(tags):
         if i % 2:
-            try:
-                attrs = re.split('\.', tag)
-                var = locals()[attrs[0]]
-                for attr in attrs[1:]:
-                    var = getattr(var, attr)
-                if type(var) is MethodType:
-                    var = var()
+            attrs = re.split('\.', tag)
+            var = locals()[attrs[0]]
+            for attr in attrs[1:]:
+                var = getattr(var, attr)
+            if type(var) in [FunctionType, MethodType, BuiltinFunctionType, BuiltinMethodType]:
+                var = var()
+            if var:
                 out += unicode(var)
-            except:
-                raise UnboundLocalError('unbound variable "%s"' % tag)
         else:
             out += tag
     return out

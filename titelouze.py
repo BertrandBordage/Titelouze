@@ -66,7 +66,7 @@ class Titelouze:
         kwargs['define-default'] = 'preview'
         self.launch_lilypond(*args, **kwargs)
     def output(self):
-        lines = replace_tags('templates/base.ily', locals())
+        lines = replace_tags(TEMPLATE_PATH+'base.ily', locals())
         write_to_file('out.ly', lines)
         self.compile_pdf(verbose=True)
 
