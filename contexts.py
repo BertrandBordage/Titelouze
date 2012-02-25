@@ -68,6 +68,8 @@ class Context:
             out += context.output(new_indent)
         out += self.close_tag(indent+1)
         return out
+    def __unicode__(self):
+        return self.output()
 
 class Dynamics(Context):
     name = 'Dynamics'

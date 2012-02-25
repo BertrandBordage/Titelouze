@@ -12,6 +12,7 @@ import subprocess, sys, re, os
 from settings import *
 from contexts import *
 from instruments import *
+from types import MethodType
 
 class LilyPond:
     def launch(self, *args, **kwargs):
@@ -49,8 +50,10 @@ class LilyPond:
             raise Exception('unable to locate version number')
 
 class Titelouze:
+    lilypond = LilyPond()
+    tags_object = re.compile(TITELOUZE_TAG_PATTERN)
     def __init__(self):
-        self.tags_object = re.compile(TITELOUZE_TAG_PATTERN)
+        self.lilypond_version = lilypond.get_version()
     def replace_tags(self, filename):
         '''
         Opens filename.
@@ -65,7 +68,13 @@ class Titelouze:
         for i, tag in enumerate(tags):
             if i % 2:
                 try:
-                    out += globals()[tag]
+                    attrs = re.split('\.', tag)
+                    var = locals()[attrs[0]]
+                    for attr in attrs[1:]:
+                        var = getattr(var, attr)
+                    if type(var) is MethodType:
+                        var = var()
+                    out += unicode(var)
                 except:
                     raise UnboundLocalError('unbound variable "%s"' % tag)
             else:
@@ -84,15 +93,13 @@ class Titelouze:
 
 if __name__ == '__main__':
     lilypond = LilyPond()
-    titelouze = Titelouze()
-    version = lilypond.get_version()
-    lines = titelouze.replace_tags('templates/base.ily')
-    book = Book()
+    t = Titelouze()
+    t.book = Book()
     score = Score()
-    book.add(score)
+    t.book.add(score)
     score.add(Organ())
     score.add(Contralto())
-    lines += book.output()
-    titelouze.output('out.ly', lines)
-    lilypond.launch('out.ly', verbose=True)
+    lines = t.replace_tags('templates/base.ily')
+    t.output('out.ly', lines)
+    t.lilypond.launch('out.ly', verbose=True)
 
