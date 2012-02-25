@@ -16,7 +16,7 @@ from instruments import *
 class LilyPond:
     def launch(self, *args, **kwargs):
         '''
-        Launches LilyPond with raw args and kwargs passed as "--key=value".
+        Launches LilyPond with raw args and kwargs passed as "--[key]=[value]".
         Returns the output.
         launch([...], verbose=True) will flush the output to stdout.
         '''
@@ -53,7 +53,9 @@ class Titelouze:
         self.tags_object = re.compile(TITELOUZE_TAG_PATTERN)
     def replace_tags(self, filename):
         '''
+        Opens filename.
         Replaces template tags with the corresponding values.
+        Returns the updated content of filename.
         '''
         f = open(filename, 'r')
         lines = ''.join(f.readlines())
