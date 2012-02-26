@@ -14,6 +14,7 @@ class Context:
         self.contexts = []
         self.properties = {}
         self.properties.update(kwargs)
+        self.functions = []
         try:
             self.instance_name = self.properties['instrumentName'].lower()
         except:
@@ -22,7 +23,7 @@ class Context:
     name = 'Context'
     allow_simultaneous_music = True
     instance_name = None
-    mode = ''
+    mode = "\\relative c' "
     def __setattr__(self, name, value):
         self.__dict__[name] = value
     def add(self, *contexts):
@@ -35,6 +36,10 @@ class Context:
         if self.is_simultaneous():
             return SIMULTANEOUS_MUSIC_TAGS
         return SEQUENTIAL_MUSIC_TAGS
+    def output_instance(self):
+        if self.instance_name:
+            return ' = "%s"' % self.instance_name
+        return ''
     def output_properties(self):
         if self.properties:
             indent = self.indent
@@ -47,17 +52,18 @@ class Context:
             out += '}'
             return out
         return ''
-    def output_instance(self):
-        if self.instance_name:
-            return ' = "%s"' % self.instance_name
-        return ''
+    def output_functions(self):
+        return ' '.join(self.functions)
     def open_tag(self, indent=0):
         return self.tags()[0]
     def close_tag(self, indent=0):
         return self.tags()[1]
     def content(self):
         if not self.contexts:
-            return replace_tags('empty-context', locals())
+            out = replace_tags('empty-context', locals())
+            ind = '\n' + INDENT_UNIT
+            lines = filter(bool, re.split('\n', out))
+            return ind[1:] + ind.join(lines)
         if self.is_simultaneous() and not self.allow_simultaneous_music:
             group = Group()
             group.indent = self.indent
@@ -80,8 +86,7 @@ class Context:
         out = replace_tags(filename, locals())
         ind = '\n' + INDENT_UNIT * self.indent
         lines = filter(bool, re.split('\n', out))
-        out = ind[1:] + ind.join(lines)
-        return out
+        return ind[1:] + ind.join(lines)
     def __unicode__(self):
         return self.output()
 
@@ -109,6 +114,7 @@ class Group(Context):
         except AttributeError:
             pass
     name = 'Group'
+    mode = ''
     def __setattr__(self, name, value):
         if name == 'properties':
             raise AttributeError('"Group" is a fake context.  One cannot use "%s" with it.' % name)
@@ -121,12 +127,15 @@ class Group(Context):
 
 class StaffGroup(Context):
     name = 'StaffGroup'
+    mode = ''
 
 class ChoirStaff(Context):
     name = 'ChoirStaff'
+    mode = ''
 
 class PianoStaff(Context):
     name = 'PianoStaff'
+    mode = ''
 
 class StructContext(Context):
     allow_simultaneous_music = False

@@ -43,7 +43,7 @@ class Tenore(Group):
                        shortInstrumentName='T.',
                        autoBeaming=False),
                  Lyrics('tenore'))
-    clef = 'G_8'
+        self.functions.append('\clef G_8')
 
 class Bass(Group):
     def __init__(self, *args, **kwargs):
@@ -52,7 +52,7 @@ class Bass(Group):
                        shortInstrumentName='B.',
                        autoBeaming=False),
                  Lyrics('bass'))
-    clef = 'F'
+        self.functions.append('\clef F')
 
 # Strings
 
@@ -61,7 +61,6 @@ class Violin(Staff):
         Staff.__init__(self)
         self.properties.update(instrumentName='Violin',
                                shortInstrumentName='Vl.')
-    clef = 'G'
     instance_name = 'violin'
 
 class Viola(Staff):
@@ -69,7 +68,7 @@ class Viola(Staff):
         Staff.__init__(self)
         self.properties.update(instrumentName='Viola',
                                shortInstrumentName='Va.')
-    clef = 'G'
+        self.functions.append('\clef alto')
     instance_name = 'viola'
 
 class Violoncello(Staff):
@@ -77,7 +76,7 @@ class Violoncello(Staff):
         Staff.__init__(self)
         self.properties.update(instrumentName='Violoncello',
                                shortInstrumentName='Vc.')
-    clef = 'F'
+        self.functions.append('\clef F')
     instance_name = 'violoncello'
 
 class Contrabass(Staff):
@@ -85,7 +84,7 @@ class Contrabass(Staff):
         Staff.__init__(self)
         self.properties.update(instrumentName='Contrabass',
                                shortInstrumentName='Cb.')
-    clef = 'F_8'
+        self.functions.append('\clef F_8')
     instance_name = 'contrabass'
 
 #
@@ -128,7 +127,7 @@ class Pedal(Staff):
         Staff.__init__(self)
         self.properties.update(instrumentName='Pedal',
                                shortInstrumentName='Pe.')
-    clef = 'F'
+        self.functions.append('\clef F')
     instance_name = 'pedal'
 
 class Organ(Group):
