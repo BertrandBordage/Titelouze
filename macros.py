@@ -5,7 +5,7 @@ Useful functions that can't be placed somewhere else.
 '''
 
 import re, os
-from settings import TITELOUZE_TAG_PATTERN
+from settings import TITELOUZE_TAG_PATTERN, TEMPLATE_PATH, TEMPLATE_EXTENSION
 from types import FunctionType, MethodType, BuiltinFunctionType, BuiltinMethodType
 
 def py2scm (py):
@@ -32,7 +32,7 @@ def replace_tags(filename, parent_locals):
     '''
     locals().update(parent_locals)
     tags_object = re.compile(TITELOUZE_TAG_PATTERN)
-    f = open(filename, 'r')
+    f = open(TEMPLATE_PATH+filename+TEMPLATE_EXTENSION, 'r')
     lines = ''.join(f.readlines())
     f.close()
     tags = tags_object.split(lines)

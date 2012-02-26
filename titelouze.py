@@ -66,16 +66,19 @@ class Titelouze:
         kwargs['define-default'] = 'preview'
         self.launch_lilypond(*args, **kwargs)
     def output(self):
-        lines = replace_tags(TEMPLATE_PATH+'base.ily', locals())
+        lines = replace_tags('base', locals())
         write_to_file('out.ly', lines)
         self.compile_pdf(verbose=True)
 
 if __name__ == '__main__':
     lilypond = LilyPond()
     t = Titelouze()
-    score = Score()
-    t.book.add(score)
-    score.add(Organ())
-    score.add(Contralto())
+    score1 = Score()
+    score1.header['title'] = 'Concerto'
+    score2 = Score()
+    score2.header['composer'] = 'Antonio Lucio Vivaldi'
+    t.book.add(score1, score2)
+    score1.add(Organ())
+    score2.add(Contralto())
     t.output()
 

@@ -57,7 +57,7 @@ class Context:
         return self.tags()[1]
     def content(self):
         if not self.contexts:
-            return replace_tags(TEMPLATE_PATH+'empty-context'+TEMPLATE_EXTENSION, locals())
+            return replace_tags('empty-context', locals())
         if self.is_simultaneous() and not self.allow_simultaneous_music:
             group = Group()
             group.indent = self.indent
@@ -69,19 +69,18 @@ class Context:
             out.append(context.output())
         return '\n'.join(out)
     def output(self):
-        path = TEMPLATE_PATH
         cl = self.__class__
         while True:
-            filename = cl.__name__.lower() + TEMPLATE_EXTENSION
-            if os.path.exists(path+filename):
+            filename = cl.__name__.lower()
+            if os.path.exists(TEMPLATE_PATH+filename+TEMPLATE_EXTENSION):
                 break
             if len(cl.__bases__) > 1:
                 raise Warning('Two or more base classes for this class : %s' % cl)
             cl = cl.__bases__[0]
-        out = replace_tags(path+filename, locals())
+        out = replace_tags(filename, locals())
         ind = '\n' + INDENT_UNIT * self.indent
-        lines = filter(bool, re.split('\s?\n', out))
-        out = ind[1:] + ind.join(lines) # indent & remove trailing whitespaces
+        lines = filter(bool, re.split('\n', out))
+        out = ind[1:] + ind.join(lines)
         return out
     def __unicode__(self):
         return self.output()
@@ -131,13 +130,38 @@ class PianoStaff(Context):
 
 class StructContext(Context):
     allow_simultaneous_music = False
+    def __init__(self, *args, **kwargs):
+        Context.__init__(self, *args, **kwargs)
+        self.header = {}
+    def headers(self):
+        out = []
+        for key in self.header:
+            out.append('%s = %s' % (key, py2scm(self.header[key])))
+        ind = '\n' + INDENT_UNIT
+        return ind[1:] + ind.join(out)
+    def output_header(self):
+        if self.header:
+            out = replace_tags('header', locals())
+            ind = '\n' + INDENT_UNIT
+            out = ind[1:] + ind.join(filter(bool, re.split('\n', out)))
+            return out
 
 class Score(StructContext):
     name = 'Score'
 
 class BookPart(StructContext):
     name = 'BookPart'
+    def content(self):
+        out = []
+        for context in self.contexts:
+            out.append(context.output())
+        return '\n'.join(out)
 
 class Book(StructContext):
     name = 'Book'
+    def content(self):
+        out = []
+        for context in self.contexts:
+            out.append(context.output())
+        return '\n'.join(out)
 
