@@ -14,7 +14,6 @@ class Context:
         self.contexts = []
         self.properties = {}
         self.properties.update(kwargs)
-#        self.message = COMMENT_TAG + 'Write here the content of this %s.' % self.name.lower() + '\n'
         try:
             self.instance_name = self.properties['instrumentName'].lower()
         except:
@@ -28,7 +27,7 @@ class Context:
         self.__dict__[name] = value
     def add(self, *contexts):
         for context in contexts:
-            context.indent = self.indent + 1
+            context.indent = 1
         self.contexts.extend(contexts)
     def is_simultaneous(self):
         return len(self.contexts) > 1
@@ -38,32 +37,37 @@ class Context:
         return SEQUENTIAL_MUSIC_TAGS
     def output_properties(self):
         if self.properties:
-            indent = self.indent + 1
-            out = ' \\with {\n'
+            indent = self.indent
+            out = '\\with {\n'
             props = self.properties
             for key in props:
-                out += INDENT_UNIT * (indent+1)
+                out += INDENT_UNIT
                 value = py2scm(props[key])
                 out += '%s = %s\n' % (key, value)
-            out += INDENT_UNIT * indent + '}'
+            out += '}'
             return out
         return ''
     def output_instance(self):
-        return ' = "%s"' % self.instance_name
+        if self.instance_name:
+            return ' = "%s"' % self.instance_name
+        return ''
     def open_tag(self, indent=0):
         return self.tags()[0]
     def close_tag(self, indent=0):
         return self.tags()[1]
     def content(self):
-        out = ''
+        if not self.contexts:
+            return replace_tags(TEMPLATE_PATH+'empty-context'+TEMPLATE_EXTENSION, locals())
         if self.is_simultaneous() and not self.allow_simultaneous_music:
             group = Group()
+            group.indent = self.indent
             for context in self.contexts:
                 group.add(context)
             return group.output()
+        out = []
         for context in self.contexts:
-            out += context.output()
-        return out
+            out.append(context.output())
+        return '\n'.join(out)
     def output(self):
         path = TEMPLATE_PATH
         cl = self.__class__
@@ -76,7 +80,8 @@ class Context:
             cl = cl.__bases__[0]
         out = replace_tags(path+filename, locals())
         ind = '\n' + INDENT_UNIT * self.indent
-        out = ind[1:] + ind.join(re.split('\s?\n', out)) # indent & remove trailing whitespaces
+        lines = filter(bool, re.split('\s?\n', out))
+        out = ind[1:] + ind.join(lines) # indent & remove trailing whitespaces
         return out
     def __unicode__(self):
         return self.output()
@@ -110,10 +115,10 @@ class Group(Context):
             raise AttributeError('"Group" is a fake context.  One cannot use "%s" with it.' % name)
         return Context.__setattr__(self, name, value)
     def content(self):
-        out = ''
+        out = []
         for context in self.contexts:
-            out += context.output()
-        return out
+            out.append(context.output())
+        return '\n'.join(out)
 
 class StaffGroup(Context):
     name = 'StaffGroup'

@@ -1,3 +1,4 @@
 \{{ self.name.lower }}
 {
-{{ self.content }}}
+{{ self.content }}
+}

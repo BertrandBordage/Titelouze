@@ -75,7 +75,7 @@ if __name__ == '__main__':
     t = Titelouze()
     score = Score()
     t.book.add(score)
-#    score.add(Organ())
+    score.add(Organ())
     score.add(Contralto())
     t.output()
 
