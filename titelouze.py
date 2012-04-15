@@ -1,8 +1,9 @@
+#! /usr/bin/env python
 # coding: utf-8
 
 '''
 Titelouze
-Bertrand Bordage © 2011
+Bertrand Bordage © 2011-2012
 
 This application is a framework for LilyPond, a music engraving program.
 Its goal is to provide an easy way to create large music books.
