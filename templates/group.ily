@@ -1,3 +1,3 @@
 <<
-{{ self.content }}
+  {{ self.content }}
 >>

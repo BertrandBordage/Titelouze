@@ -38,15 +38,7 @@ class Context:
             return ' = "%s"' % self.instance_name
         return ''
     def output_properties(self):
-        if self.properties:
-            properties = ''
-            props = self.properties
-            for key in props:
-                value = py2scm(props[key])
-                properties += replace_tags('with-property', locals())
-            properties = indent(properties)
-            return indent(replace_tags('with-properties', locals()))
-        return ''
+        return render_properties(self.properties, 'with')
     def output_functions(self):
         return ' '.join(self.functions)
     def open_tag(self):
@@ -56,13 +48,13 @@ class Context:
     def content(self):
         if not self.contexts:
             out = replace_tags('empty-context', locals())
-            return indent(out)
+            return out
         if self.is_simultaneous() and not self.allow_simultaneous_music:
             group = Group()
             for context in self.contexts:
                 group.add(context)
             return group.output()
-        return '\n'.join([context.output() for context in self.contexts])
+        return ''.join([context.output() for context in self.contexts])
     def output(self):
         cl = self.__class__
         while True:
@@ -73,7 +65,7 @@ class Context:
                 raise Warning('Two or more base classes for this class : %s' % cl)
             cl = cl.__bases__[0]
         out = replace_tags(filename, locals())
-        return indent(out)
+        return out
     def __unicode__(self):
         return self.output()
 
@@ -107,10 +99,10 @@ class Group(Context):
             raise AttributeError('"Group" is a fake context.  One cannot use "%s" with it.' % name)
         return Context.__setattr__(self, name, value)
     def content(self):
-        out = []
+        l = []
         for context in self.contexts:
-            out.append(context.output())
-        return '\n'.join(out)
+            l.append(context.output())
+        return ''.join(l)
 
 class StaffGroup(Context):
     name = 'StaffGroup'
@@ -129,15 +121,8 @@ class StructContext(Context):
     def __init__(self, *args, **kwargs):
         Context.__init__(self, *args, **kwargs)
         self.header = {}
-    def headers(self):
-        l = []
-        for key in self.header:
-            l.append('%s = %s' % (key, py2scm(self.header[key])))
-        return indent(l)
     def output_header(self):
-        if self.header:
-            out = replace_tags('header', locals())
-            return indent(out)
+        return render_properties(self.header, 'header')
 
 class Score(StructContext):
     name = 'Score'
@@ -145,15 +130,15 @@ class Score(StructContext):
 class BookPart(StructContext):
     name = 'BookPart'
     def content(self):
-        out = []
+        l = []
         for context in self.contexts:
-            out.append(context.output())
-        return '\n'.join(out)
+            l.append(context.output())
+        return ''.join(l)
 
 class Book(StructContext):
     name = 'Book'
     def content(self):
-        out = []
+        l = []
         for context in self.contexts:
-            out.append(context.output())
-        return '\n'.join(out)
+            l.append(context.output())
+        return ''.join(l)

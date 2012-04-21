@@ -27,7 +27,7 @@ def py2scm (py):
     raise Exception('unable to convert "%s" to Scheme.' % py)
 
 
-def indent(text, amount=INDENT_UNIT):
+def indent(text, amount):
     '''
     Indent text by an amount of spaces.
 
@@ -35,8 +35,11 @@ def indent(text, amount=INDENT_UNIT):
     '  ab\\n  cd\\n  ef\\n'
     '''
     lines = text if isinstance(text, list) else text.split('\n')
-    lines = [amount * ' ' + line for line in lines]
-    return '\n'.join(lines)
+    l = []
+    for line in lines:
+        s = amount * ' ' + line if line else ''
+        l.append(s)
+    return '\n'.join(l)
 
 
 def replace_tags(filename, parent_locals):
@@ -48,26 +51,58 @@ def replace_tags(filename, parent_locals):
     locals().update(parent_locals)
     tags_object = re.compile(TITELOUZE_TAG_PATTERN)
     f = open(TEMPLATE_PATH+filename+TEMPLATE_EXTENSION, 'r')
-    lines = ''.join(f.readlines())
+    lines = f.readlines()
     f.close()
-    tags = tags_object.split(lines)
     out = ''
-    for i, tag in enumerate(tags):
-        if i % 2:
-            attrs = re.split('\.', tag)
-            var = locals()[attrs[0]]
-            for attr in attrs[1:]:
-                var = getattr(var, attr)
-            if type(var) in [FunctionType, MethodType, BuiltinFunctionType, BuiltinMethodType]:
-                var = var()
-            if var:
-                out += unicode(var)
+    for line in lines:
+        tags = tags_object.split(line)
+        first = tags[0]
+        line_out = ''
+        for i, tag in enumerate(tags):
+            if i % 2:
+                attrs = re.split('\.', tag)
+                var = locals()[attrs[0]]
+                for attr in attrs[1:]:
+                    var = getattr(var, attr)
+                if type(var) in [FunctionType, MethodType, BuiltinFunctionType, BuiltinMethodType]:
+                    var = var()
+                if var:
+                    line_out += unicode(var)
+            elif not (i == 0 and tag == len(first) * ' '):
+                line_out += tag
+        if first == len(first) * ' ':
+            out += indent(line_out, len(first))
         else:
-            out += tag
+            out += line_out
     return out
 
 
-def write_to_file(filename, lines):
+def render_properties(props, template_name):
+    '''
+    Render 'props' from the templates 'property' and 'template_name'
+    '''
+    if props:
+        properties = ''
+        for key in props:
+            value = py2scm(props[key])
+            properties += replace_tags('property', locals())
+        return replace_tags(template_name, locals())
+    return ''
+
+
+def remove_empty_lines(text):
+    '''
+    Remove every empty newline.
+
+    >>> remove_empty_lines('ab\\nde\\n\\nfg\\n')
+    'ab\\nde\\nfg'
+    '''
+    lines = text.split('\n')
+    lines = filter(bool, lines)
+    return '\n'.join(lines)
+
+
+def write_to_file(filename, text):
     '''
     Saves "lines" in the file named "filename".
     '''
@@ -75,8 +110,10 @@ def write_to_file(filename, lines):
     if dir and not os.path.exists(dir):
         os.makedirs(dir)
     f = open(filename, 'w')
-    f.writelines(lines)
+    f.write(text)
     f.close()
+
+
 
 if __name__ == '__main__':
     import doctest
