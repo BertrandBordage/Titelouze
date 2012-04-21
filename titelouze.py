@@ -82,4 +82,3 @@ if __name__ == '__main__':
     score1.add(Organ())
     score2.add(Contralto())
     t.output()
-

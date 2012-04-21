@@ -5,12 +5,15 @@ Useful functions that can't be placed somewhere else.
 '''
 
 import re, os
-from settings import TITELOUZE_TAG_PATTERN, TEMPLATE_PATH, TEMPLATE_EXTENSION
+from settings import *
 from types import FunctionType, MethodType, BuiltinFunctionType, BuiltinMethodType
 
 def py2scm (py):
     '''
     Converts python values into a string of the corresponding Scheme value.
+
+    >>> map(py2scm, [True, False, 1, 1.0, 'abc'])
+    ['##t', '##f', '#1', '#1.0', '#"abc"']
     '''
     if isinstance(py, bool):
         if py:
@@ -22,6 +25,18 @@ def py2scm (py):
     if isinstance(py, str):
         return '#"%s"' % py
     raise Exception('unable to convert "%s" to Scheme.' % py)
+
+
+def indent(text, amount=INDENT_UNIT):
+    '''
+    Indent text by an amount of spaces.
+
+    >>> indent('ab\\ncd\\nef\\n', 2)
+    '  ab\\n  cd\\n  ef\\n'
+    '''
+    lines = text if isinstance(text, list) else text.split('\n')
+    lines = [amount * ' ' + line for line in lines]
+    return '\n'.join(lines)
 
 
 def replace_tags(filename, parent_locals):
@@ -63,3 +78,6 @@ def write_to_file(filename, lines):
     f.writelines(lines)
     f.close()
 
+if __name__ == '__main__':
+    import doctest
+    doctest.testmod()

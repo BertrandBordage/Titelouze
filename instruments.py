@@ -135,4 +135,3 @@ class Organ(Group):
         Group.__init__(self)
         self.add(Keyboards(), Pedal())
     instance_name = 'organ'
-

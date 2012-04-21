@@ -9,7 +9,6 @@ from macros import *
 import os, re
 
 class Context:
-    indent = 0
     def __init__(self, associated='', **kwargs):
         self.contexts = []
         self.properties = {}
@@ -27,8 +26,6 @@ class Context:
     def __setattr__(self, name, value):
         self.__dict__[name] = value
     def add(self, *contexts):
-        for context in contexts:
-            context.indent = 1
         self.contexts.extend(contexts)
     def is_simultaneous(self):
         return len(self.contexts) > 1
@@ -42,38 +39,30 @@ class Context:
         return ''
     def output_properties(self):
         if self.properties:
-            indent = self.indent
-            out = '\\with {\n'
+            properties = ''
             props = self.properties
             for key in props:
-                out += INDENT_UNIT
                 value = py2scm(props[key])
-                out += '%s = %s\n' % (key, value)
-            out += '}'
-            return out
+                properties += replace_tags('with-property', locals())
+            properties = indent(properties)
+            return indent(replace_tags('with-properties', locals()))
         return ''
     def output_functions(self):
         return ' '.join(self.functions)
-    def open_tag(self, indent=0):
+    def open_tag(self):
         return self.tags()[0]
-    def close_tag(self, indent=0):
+    def close_tag(self):
         return self.tags()[1]
     def content(self):
         if not self.contexts:
             out = replace_tags('empty-context', locals())
-            ind = '\n' + INDENT_UNIT
-            lines = filter(bool, re.split('\n', out))
-            return ind[1:] + ind.join(lines)
+            return indent(out)
         if self.is_simultaneous() and not self.allow_simultaneous_music:
             group = Group()
-            group.indent = self.indent
             for context in self.contexts:
                 group.add(context)
             return group.output()
-        out = []
-        for context in self.contexts:
-            out.append(context.output())
-        return '\n'.join(out)
+        return '\n'.join([context.output() for context in self.contexts])
     def output(self):
         cl = self.__class__
         while True:
@@ -84,9 +73,7 @@ class Context:
                 raise Warning('Two or more base classes for this class : %s' % cl)
             cl = cl.__bases__[0]
         out = replace_tags(filename, locals())
-        ind = '\n' + INDENT_UNIT * self.indent
-        lines = filter(bool, re.split('\n', out))
-        return ind[1:] + ind.join(lines)
+        return indent(out)
     def __unicode__(self):
         return self.output()
 
@@ -143,17 +130,14 @@ class StructContext(Context):
         Context.__init__(self, *args, **kwargs)
         self.header = {}
     def headers(self):
-        out = []
+        l = []
         for key in self.header:
-            out.append('%s = %s' % (key, py2scm(self.header[key])))
-        ind = '\n' + INDENT_UNIT
-        return ind[1:] + ind.join(out)
+            l.append('%s = %s' % (key, py2scm(self.header[key])))
+        return indent(l)
     def output_header(self):
         if self.header:
             out = replace_tags('header', locals())
-            ind = '\n' + INDENT_UNIT
-            out = ind[1:] + ind.join(filter(bool, re.split('\n', out)))
-            return out
+            return indent(out)
 
 class Score(StructContext):
     name = 'Score'
@@ -173,4 +157,3 @@ class Book(StructContext):
         for context in self.contexts:
             out.append(context.output())
         return '\n'.join(out)
-
