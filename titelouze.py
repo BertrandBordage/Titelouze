@@ -59,7 +59,7 @@ class Titelouze:
     lilypond = LilyPond()
     book = Book()
     def __init__(self):
-        self.lilypond_version = lilypond.get_version()
+        self.lilypond_version = self.lilypond.get_version()
     def launch_lilypond(self, filename='out.ly', *args, **kwargs):
         self.lilypond.launch(filename, *args, **kwargs)
     def compile_pdf(self, *args, **kwargs):
@@ -77,13 +77,19 @@ class Titelouze:
         self.compile_pdf(verbose=True)
 
 if __name__ == '__main__':
-    lilypond = LilyPond()
     t = Titelouze()
     score1 = Score()
     score1.header['title'] = 'Concerto'
     score2 = Score()
     score2.header['composer'] = 'Antonio Lucio Vivaldi'
     t.book.add(score1, score2)
-    score1.add(Organ())
-    score2.add(Contralto())
+    organ = Organ()
+    organ.keyboards.righthand = 'a16 cis e cis ' * 10
+    organ.keyboards.lefthand = 'cis8 a ' * 10
+    organ.pedal = 'bes4 a ' * 5
+    score1.add(organ)
+    contralto = Contralto()
+    contralto.staff = 'd b c'
+    contralto.lyrics = u'ré si do'
+    score2.add(contralto)
     t.output()

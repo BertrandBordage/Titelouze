@@ -6,7 +6,20 @@ Useful functions that can't be placed somewhere else.
 
 import re, os
 from settings import *
-from types import FunctionType, MethodType, BuiltinFunctionType, BuiltinMethodType
+from types import FunctionType,        MethodType, \
+           BuiltinFunctionType, BuiltinMethodType
+
+
+
+def context_exists(context, name):
+    return (context.__class__.__name__.lower() or context.name.lower()) == name
+
+
+def find_contexts(obj, name):
+    if 'contexts' in obj.__dict__:
+        contexts = filter(lambda c: context_exists(c, name), obj.contexts)
+        return contexts
+
 
 def py2scm (py):
     '''
@@ -110,7 +123,7 @@ def write_to_file(filename, text):
     if dir and not os.path.exists(dir):
         os.makedirs(dir)
     f = open(filename, 'w')
-    f.write(text)
+    f.write(text.encode('utf-8'))
     f.close()
 
 

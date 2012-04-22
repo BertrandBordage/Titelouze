@@ -93,10 +93,18 @@ class Contrabass(Staff):
 
 # Keyboards
 
+class RightHand(Staff):
+    pass
+
+class LeftHand(Staff):
+    def __init__(self):
+        Staff.__init__(self)
+        self.functions.append('\clef F')
+
 class Keyboard(PianoStaff):
     def __init__(self):
         PianoStaff.__init__(self)
-        self.add(Staff(), Dynamics(), Staff())
+        self.add(RightHand(), Dynamics(), LeftHand())
         self.properties.update(instrumentName='Keyboard',
                                shortInstrumentName='K.')
     instance_name = 'keyboard'

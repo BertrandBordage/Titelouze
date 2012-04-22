@@ -8,7 +8,7 @@ from settings import *
 from macros import *
 import os, re
 
-class Context:
+class Context(object):
     def __init__(self, associated='', **kwargs):
         self.contexts = []
         self.properties = {}
@@ -23,8 +23,20 @@ class Context:
     allow_simultaneous_music = True
     instance_name = None
     mode = "\\relative c' "
-    def __setattr__(self, name, value):
-        self.__dict__[name] = value
+    def __setattr__(self, attr, value):
+        contexts = find_contexts(self, attr)
+        if not contexts:
+            return object.__setattr__(self, attr, value)
+        for context in contexts:
+            context.__setattr__('content', value)
+    def __getattribute__(self, attr):
+        try:
+            return object.__getattribute__(self, attr)
+        except:
+            contexts = find_contexts(self, attr)
+            if len(contexts) > 1:
+                raise Exception('two or more contexts have the attribute %s' % attr)
+            return contexts[0]
     def add(self, *contexts):
         self.contexts.extend(contexts)
     def is_simultaneous(self):
@@ -35,7 +47,7 @@ class Context:
         return SEQUENTIAL_MUSIC_TAGS
     def output_instance(self):
         if self.instance_name:
-            return ' = "%s"' % self.instance_name
+            return '= "%s"' % self.instance_name
         return ''
     def output_properties(self):
         return render_properties(self.properties, 'with')
