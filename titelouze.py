@@ -16,6 +16,10 @@ from contexts import *
 from instruments import *
 
 class LilyPond:
+    def __init__(self, path=LILYPOND_PATH, binary=LILYPOND_BINARY):
+        self.path = path
+        self.binary = binary
+        self.command = path + binary
     def launch(self, filename, *args, **kwargs):
         '''
         Launches LilyPond with raw args and kwargs passed as "--[key]=[value]".
@@ -25,7 +29,7 @@ class LilyPond:
         verbose = kwargs.get('verbose', False)
         if 'verbose' in kwargs:
             del kwargs['verbose']
-        command = [LILYPOND_COMMAND]
+        command = [self.command]
         for arg in args:
             command.append(arg)
         for key in kwargs:
