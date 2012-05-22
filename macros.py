@@ -48,11 +48,7 @@ def indent(text, amount):
     '  ab\\n  cd\\n  ef\\n'
     '''
     lines = text if isinstance(text, list) else text.split('\n')
-    l = []
-    for line in lines:
-        s = amount * ' ' + line if line else ''
-        l.append(s)
-    return '\n'.join(l)
+    return '\n'.join((amount * ' ' + l if l else '' for l in lines))
 
 
 def replace_tags(filename, parent_locals):
@@ -112,9 +108,7 @@ def remove_empty_lines(text):
     >>> remove_empty_lines('ab\\nde\\n\\nfg\\n')
     'ab\\nde\\nfg'
     '''
-    lines = text.split('\n')
-    lines = filter(bool, lines)
-    return '\n'.join(lines)
+    return '\n'.join(filter(bool, text.split('\n')))
 
 
 def write_to_file(filename, text):

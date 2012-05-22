@@ -31,24 +31,22 @@ class LilyPond:
         launch([...], verbose=True) will flush the output to stdout.
         '''
         verbose = kwargs.get('verbose', False)
-        if 'verbose' in kwargs:
+        if verbose:
             del kwargs['verbose']
         command = [self.command]
-        for arg in args:
-            command.append(arg)
-        for key in kwargs:
-            command.append('--%s=%s' % (key, kwargs[key]))
+        command.extend(args)
+        command.extend(('--%s=%s' % (k, kwargs[k]) for k in kwargs))
         command.append(filename)
         p = subprocess.Popen(args=command, stdout=subprocess.PIPE,
             stderr=subprocess.STDOUT, shell=False)
-        lines = ''
-        for line in iter(p.stdout.readline, ""):
+        lines = []
+        for line in iter(p.stdout.readline, ''):
             if verbose:
                 sys.stdout.write(line)
                 sys.stdout.flush()
-            lines += line
+            lines.append(line)
         p.wait()
-        return lines
+        return ''.join(lines)
 
     def get_version(self):
         '''

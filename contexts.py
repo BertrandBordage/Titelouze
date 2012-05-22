@@ -13,16 +13,16 @@ class Context(object):
     name = 'Context'
     allow_simultaneous_music = True
     instance_name = None
-    mode = "\\relative c' "
+    mode = ''
 
-    def __init__(self, associated='', **kwargs):
+    def __init__(self, associated=None, **kwargs):
         self.contexts = []
         self.properties = {}
         self.properties.update(kwargs)
         self.functions = []
         try:
             self.instance_name = self.properties['instrumentName'].lower()
-        except:
+        except KeyError:
             pass
         self.associated_instance = associated
 
@@ -36,7 +36,7 @@ class Context(object):
     def __getattribute__(self, attr):
         try:
             return object.__getattribute__(self, attr)
-        except:
+        except AttributeError:
             contexts = find_contexts(self, attr)
             if len(contexts) > 1:
                 raise Exception('''two or more contexts have '''
@@ -77,10 +77,9 @@ class Context(object):
             return out
         if self.is_simultaneous() and not self.allow_simultaneous_music:
             group = Group()
-            for context in self.contexts:
-                group.add(context)
+            group.add(*self.contexts)
             return group.output()
-        return ''.join([context.output() for context in self.contexts])
+        return ''.join((c.output() for c in self.contexts))
 
     def output(self):
         cl = self.__class__
@@ -106,7 +105,7 @@ class Dynamics(Context):
 
 class Lyrics(Context):
     name = 'Lyrics'
-    mode = '\lyricmode '
+    mode = r'\lyricmode '
 
     def __init__(self, *args, **kwargs):
         Context.__init__(self, *args, **kwargs)
@@ -116,15 +115,16 @@ class Lyrics(Context):
 
 class Voice(Context):
     name = 'Voice'
+    mode = r"\relative c' "
 
 
 class Staff(Context):
     name = 'Staff'
+    mode = r"\relative c' "
 
 
 class Group(Context):
     name = 'Group'
-    mode = ''
 
     def __init__(self, *args, **kwargs):
         try:
@@ -139,25 +139,19 @@ class Group(Context):
         return Context.__setattr__(self, name, value)
 
     def content(self):
-        l = []
-        for context in self.contexts:
-            l.append(context.output())
-        return ''.join(l)
+        return ''.join((c.output() for c in self.contexts))
 
 
 class StaffGroup(Context):
     name = 'StaffGroup'
-    mode = ''
 
 
 class ChoirStaff(Context):
     name = 'ChoirStaff'
-    mode = ''
 
 
 class PianoStaff(Context):
     name = 'PianoStaff'
-    mode = ''
 
 
 class StructContext(Context):
@@ -179,17 +173,11 @@ class BookPart(StructContext):
     name = 'BookPart'
 
     def content(self):
-        l = []
-        for context in self.contexts:
-            l.append(context.output())
-        return ''.join(l)
+        return ''.join((c.output() for c in self.contexts))
 
 
 class Book(StructContext):
     name = 'Book'
 
     def content(self):
-        l = []
-        for context in self.contexts:
-            l.append(context.output())
-        return ''.join(l)
+        return ''.join((c.output() for c in self.contexts))
