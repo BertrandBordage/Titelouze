@@ -7,8 +7,6 @@ Useful functions that can't be placed somewhere else.
 import re
 import os
 from settings import *
-from types import FunctionType,        MethodType, \
-           BuiltinFunctionType, BuiltinMethodType
 
 
 def context_exists(context, name):
@@ -74,8 +72,7 @@ def replace_tags(filename, parent_locals):
                 var = locals()[attrs[0]]
                 for attr in attrs[1:]:
                     var = getattr(var, attr)
-                if type(var) in (FunctionType,        MethodType,
-                          BuiltinFunctionType, BuiltinMethodType):
+                if callable(var):
                     var = var()
                 if var:
                     line_out += unicode(var)

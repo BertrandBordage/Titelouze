@@ -1,4 +1,3 @@
-#! /usr/bin/env python
 # coding: utf-8
 
 '''
@@ -14,8 +13,7 @@ import sys
 import re
 from settings import *
 from macros import *
-from contexts import *
-from instruments import *
+from contexts import Book
 
 
 class LilyPond:
@@ -62,12 +60,13 @@ class LilyPond:
 class Titelouze:
     lilypond = LilyPond()
     book = Book()
+    filename = 'out.ly'
 
     def __init__(self):
         self.lilypond_version = self.lilypond.get_version()
 
-    def launch_lilypond(self, filename='out.ly', *args, **kwargs):
-        self.lilypond.launch(filename, *args, **kwargs)
+    def launch_lilypond(self, *args, **kwargs):
+        self.lilypond.launch(self.filename, *args, **kwargs)
 
     def compile_pdf(self, *args, **kwargs):
         self.launch_lilypond(*args, **kwargs)
@@ -83,23 +82,5 @@ class Titelouze:
     def output(self):
         text = replace_tags('base', locals())
         text = remove_empty_lines(text)
-        write_to_file('out.ly', text)
+        write_to_file(self.filename, text)
         self.compile_pdf(verbose=True)
-
-if __name__ == '__main__':
-    t = Titelouze()
-    score1 = Score()
-    score1.header['title'] = 'Concerto'
-    score2 = Score()
-    score2.header['composer'] = 'Antonio Lucio Vivaldi'
-    t.book.add(score1, score2)
-    organ = Organ()
-    organ.keyboards.righthand = 'a16 cis e cis ' * 10
-    organ.keyboards.lefthand = 'cis8 a ' * 10
-    organ.pedal = 'bes4 a ' * 5
-    score1.add(organ)
-    contralto = Contralto()
-    contralto.staff = 'd b c'
-    contralto.lyrics = u'ré si do'
-    score2.add(contralto)
-    t.output()

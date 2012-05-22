@@ -25,6 +25,7 @@ LilyPond_ 2.14.2
 Running
 =======
 
-Run ``titelouze.py`` to generate a test file called ``out.ly`` and its PDF ``out.pdf``.
+Run ``example.py`` to generate a test file called ``example.ly``
+and its PDF ``example.pdf``.
 
 Feel free to ask me any question about this project.

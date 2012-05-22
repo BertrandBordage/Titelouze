@@ -25,10 +25,11 @@ class VoiceStaff(Group):
 class Soprano(Group):
     def __init__(self, *args, **kwargs):
         Group.__init__(self, *args, **kwargs)
-        self.add(Staff(instrumentName='Soprano',
-                       shortInstrumentName='S.',
-                       autoBeaming=False),
-                 Lyrics('soprano'))
+        staff = Staff(instrumentName='Soprano',
+                      shortInstrumentName='S.',
+                      autoBeaming=False)
+        staff.mode = r"\relative c''"
+        self.add(staff, Lyrics('soprano'))
 
 
 class Contralto(Group):
@@ -43,21 +44,23 @@ class Contralto(Group):
 class Tenore(Group):
     def __init__(self, *args, **kwargs):
         Group.__init__(self, *args, **kwargs)
-        self.add(Staff(instrumentName='Tenore',
-                       shortInstrumentName='T.',
-                       autoBeaming=False),
-                 Lyrics('tenore'))
-        self.functions.append('\clef G_8')
+        staff = Staff(instrumentName='Tenore',
+                      shortInstrumentName='T.',
+                      autoBeaming=False)
+        staff.functions.append(r'\clef "G_8"')
+        self.add(staff, Lyrics('tenore'))
+
 
 
 class Bass(Group):
     def __init__(self, *args, **kwargs):
         Group.__init__(self, *args, **kwargs)
-        self.add(Staff(instrumentName='Bass',
-                       shortInstrumentName='B.',
-                       autoBeaming=False),
-                 Lyrics('bass'))
-        self.functions.append('\clef F')
+        staff = Staff(instrumentName='Bass',
+                      shortInstrumentName='B.',
+                      autoBeaming=False)
+        staff.mode = r"\relative c"
+        staff.functions.append(r'\clef F')
+        self.add(staff, Lyrics('bass'))
 
 
 # Strings
@@ -75,7 +78,7 @@ class Viola(Staff):
         Staff.__init__(self)
         self.properties.update(instrumentName='Viola',
                                shortInstrumentName='Va.')
-        self.functions.append('\clef alto')
+        self.functions.append(r'\clef alto')
     instance_name = 'viola'
 
 
@@ -84,7 +87,7 @@ class Violoncello(Staff):
         Staff.__init__(self)
         self.properties.update(instrumentName='Violoncello',
                                shortInstrumentName='Vc.')
-        self.functions.append('\clef F')
+        self.functions.append(r'\clef F')
     instance_name = 'violoncello'
 
 
@@ -93,7 +96,7 @@ class Contrabass(Staff):
         Staff.__init__(self)
         self.properties.update(instrumentName='Contrabass',
                                shortInstrumentName='Cb.')
-        self.functions.append('\clef F_8')
+        self.functions.append(r'\clef F_8')
     instance_name = 'contrabass'
 
 
@@ -110,7 +113,7 @@ class RightHand(Staff):
 class LeftHand(Staff):
     def __init__(self):
         Staff.__init__(self)
-        self.functions.append('\clef F')
+        self.functions.append(r'\clef F')
 
 
 class Keyboard(PianoStaff):
@@ -151,7 +154,7 @@ class Pedal(Staff):
         Staff.__init__(self)
         self.properties.update(instrumentName='Pedal',
                                shortInstrumentName='Pe.')
-        self.functions.append('\clef F')
+        self.functions.append(r'\clef F')
     instance_name = 'pedal'
 
 

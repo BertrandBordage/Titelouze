@@ -17,12 +17,15 @@ class Context(object):
 
     def __init__(self, associated=None, **kwargs):
         self.contexts = []
-        self.properties = {}
-        self.properties.update(kwargs)
+        try:
+            self.properties = {}
+            self.properties.update(kwargs)
+        except AttributeError:
+            pass
         self.functions = []
         try:
             self.instance_name = self.properties['instrumentName'].lower()
-        except KeyError:
+        except (KeyError, AttributeError):
             pass
         self.associated_instance = associated
 
@@ -36,8 +39,10 @@ class Context(object):
     def __getattribute__(self, attr):
         try:
             return object.__getattribute__(self, attr)
-        except AttributeError:
+        except AttributeError, e:
             contexts = find_contexts(self, attr)
+            if not contexts:
+                raise e
             if len(contexts) > 1:
                 raise Exception('''two or more contexts have '''
                                 '''the attribute %s''' % attr)
@@ -127,10 +132,7 @@ class Group(Context):
     name = 'Group'
 
     def __init__(self, *args, **kwargs):
-        try:
-            Context.__init__(self, *args, **kwargs)
-        except AttributeError:
-            pass
+        Context.__init__(self, *args, **kwargs)
 
     def __setattr__(self, name, value):
         if name == 'properties':
