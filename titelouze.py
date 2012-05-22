@@ -9,17 +9,21 @@ This application is a framework for LilyPond, a music engraving program.
 Its goal is to provide an easy way to create large music books.
 '''
 
-import subprocess, sys, re, os
+import subprocess
+import sys
+import re
 from settings import *
 from macros import *
 from contexts import *
 from instruments import *
+
 
 class LilyPond:
     def __init__(self, path=LILYPOND_PATH, binary=LILYPOND_BINARY):
         self.path = path
         self.binary = binary
         self.command = path + binary
+
     def launch(self, filename, *args, **kwargs):
         '''
         Launches LilyPond with raw args and kwargs passed as "--[key]=[value]".
@@ -33,7 +37,7 @@ class LilyPond:
         for arg in args:
             command.append(arg)
         for key in kwargs:
-            command.append('--'+key+'='+kwargs[key])
+            command.append('--%s=%s' % (key, kwargs[key]))
         command.append(filename)
         p = subprocess.Popen(args=command, stdout=subprocess.PIPE,
             stderr=subprocess.STDOUT, shell=False)
@@ -45,6 +49,7 @@ class LilyPond:
             lines += line
         p.wait()
         return lines
+
     def get_version(self):
         '''
         Returns LilyPond version number.
@@ -55,21 +60,28 @@ class LilyPond:
         except:
             raise Exception('unable to locate version number')
 
+
 class Titelouze:
     lilypond = LilyPond()
     book = Book()
+
     def __init__(self):
         self.lilypond_version = self.lilypond.get_version()
+
     def launch_lilypond(self, filename='out.ly', *args, **kwargs):
         self.lilypond.launch(filename, *args, **kwargs)
+
     def compile_pdf(self, *args, **kwargs):
         self.launch_lilypond(*args, **kwargs)
+
     def compile_png(self, *args, **kwargs):
         kwargs['format'] = 'png'
         self.launch_lilypond(*args, **kwargs)
+
     def compile_preview(self, *args, **kwargs):
         kwargs['define-default'] = 'preview'
         self.launch_lilypond(*args, **kwargs)
+
     def output(self):
         text = replace_tags('base', locals())
         text = remove_empty_lines(text)

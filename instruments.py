@@ -12,6 +12,7 @@ from contexts import *
 
 # Voices
 
+
 class VoiceStaff(Group):
     def __init__(self, *args, **kwargs):
         Group.__init__(self, *args, **kwargs)
@@ -19,6 +20,7 @@ class VoiceStaff(Group):
                        shortInstrumentName='Vo.',
                        autoBeaming=False),
                  Lyrics('voice'))
+
 
 class Soprano(Group):
     def __init__(self, *args, **kwargs):
@@ -28,6 +30,7 @@ class Soprano(Group):
                        autoBeaming=False),
                  Lyrics('soprano'))
 
+
 class Contralto(Group):
     def __init__(self, *args, **kwargs):
         Group.__init__(self, *args, **kwargs)
@@ -35,6 +38,7 @@ class Contralto(Group):
                        shortInstrumentName='A.',
                        autoBeaming=False),
                  Lyrics('contralto'))
+
 
 class Tenore(Group):
     def __init__(self, *args, **kwargs):
@@ -45,6 +49,7 @@ class Tenore(Group):
                  Lyrics('tenore'))
         self.functions.append('\clef G_8')
 
+
 class Bass(Group):
     def __init__(self, *args, **kwargs):
         Group.__init__(self, *args, **kwargs)
@@ -53,6 +58,7 @@ class Bass(Group):
                        autoBeaming=False),
                  Lyrics('bass'))
         self.functions.append('\clef F')
+
 
 # Strings
 
@@ -63,6 +69,7 @@ class Violin(Staff):
                                shortInstrumentName='Vl.')
     instance_name = 'violin'
 
+
 class Viola(Staff):
     def __init__(self):
         Staff.__init__(self)
@@ -70,6 +77,7 @@ class Viola(Staff):
                                shortInstrumentName='Va.')
         self.functions.append('\clef alto')
     instance_name = 'viola'
+
 
 class Violoncello(Staff):
     def __init__(self):
@@ -79,6 +87,7 @@ class Violoncello(Staff):
         self.functions.append('\clef F')
     instance_name = 'violoncello'
 
+
 class Contrabass(Staff):
     def __init__(self):
         Staff.__init__(self)
@@ -86,6 +95,7 @@ class Contrabass(Staff):
                                shortInstrumentName='Cb.')
         self.functions.append('\clef F_8')
     instance_name = 'contrabass'
+
 
 #
 # Multiple staves instruments
@@ -96,10 +106,12 @@ class Contrabass(Staff):
 class RightHand(Staff):
     pass
 
+
 class LeftHand(Staff):
     def __init__(self):
         Staff.__init__(self)
         self.functions.append('\clef F')
+
 
 class Keyboard(PianoStaff):
     def __init__(self):
@@ -109,12 +121,14 @@ class Keyboard(PianoStaff):
                                shortInstrumentName='K.')
     instance_name = 'keyboard'
 
+
 class Keyboards(Keyboard):
     def __init__(self):
         Keyboard.__init__(self)
         self.properties.update(instrumentName='Keyboards',
                                shortInstrumentName='Ks.')
     instance_name = 'keyboards'
+
 
 class Piano(Keyboard):
     def __init__(self):
@@ -123,12 +137,14 @@ class Piano(Keyboard):
                                shortInstrumentName='Pi.')
     instance_name = 'piano'
 
+
 class Harpsichord(Keyboard):
     def __init__(self):
         Keyboard.__init__(self)
         self.properties.update(instrumentName='Harpsichord',
                                shortInstrumentName='Hc.')
     instance_name = 'harpsichord'
+
 
 class Pedal(Staff):
     def __init__(self):
@@ -137,6 +153,7 @@ class Pedal(Staff):
                                shortInstrumentName='Pe.')
         self.functions.append('\clef F')
     instance_name = 'pedal'
+
 
 class Organ(Group):
     def __init__(self):

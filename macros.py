@@ -4,11 +4,11 @@
 Useful functions that can't be placed somewhere else.
 '''
 
-import re, os
+import re
+import os
 from settings import *
 from types import FunctionType,        MethodType, \
            BuiltinFunctionType, BuiltinMethodType
-
 
 
 def context_exists(context, name):
@@ -21,7 +21,7 @@ def find_contexts(obj, name):
         return contexts
 
 
-def py2scm (py):
+def py2scm(py):
     '''
     Converts python values into a string of the corresponding Scheme value.
 
@@ -63,10 +63,11 @@ def replace_tags(filename, parent_locals):
     '''
     locals().update(parent_locals)
     tags_object = re.compile(TITELOUZE_TAG_PATTERN)
-    f = open(TEMPLATE_PATH+filename+TEMPLATE_EXTENSION, 'r')
+    abs_filename = TEMPLATE_PATH + filename + TEMPLATE_EXTENSION
+    f = open(abs_filename, 'r')
     lines = f.readlines()
     f.close()
-    out = ''
+    out = []
     for line in lines:
         tags = tags_object.split(line)
         first = tags[0]
@@ -77,17 +78,18 @@ def replace_tags(filename, parent_locals):
                 var = locals()[attrs[0]]
                 for attr in attrs[1:]:
                     var = getattr(var, attr)
-                if type(var) in [FunctionType, MethodType, BuiltinFunctionType, BuiltinMethodType]:
+                if type(var) in (FunctionType,        MethodType,
+                          BuiltinFunctionType, BuiltinMethodType):
                     var = var()
                 if var:
                     line_out += unicode(var)
             elif not (i == 0 and tag == len(first) * ' '):
                 line_out += tag
         if first == len(first) * ' ':
-            out += indent(line_out, len(first))
+            out.append(indent(line_out, len(first)))
         else:
-            out += line_out
-    return out
+            out.append(line_out)
+    return ''.join(out)
 
 
 def render_properties(props, template_name):
@@ -117,7 +119,7 @@ def remove_empty_lines(text):
 
 def write_to_file(filename, text):
     '''
-    Saves "lines" in the file named "filename".
+    Saves 'text' in the file named 'filename'.
     '''
     dir = os.path.dirname(filename)
     if dir and not os.path.exists(dir):
@@ -125,7 +127,6 @@ def write_to_file(filename, text):
     f = open(filename, 'w')
     f.write(text.encode('utf-8'))
     f.close()
-
 
 
 if __name__ == '__main__':
