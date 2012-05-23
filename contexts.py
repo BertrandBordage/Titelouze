@@ -90,8 +90,7 @@ class Context(object):
         cl = self.__class__
         while True:
             filename = cl.__name__.lower()
-            abs_filename = TEMPLATE_PATH + filename + TEMPLATE_EXTENSION
-            if os.path.exists(abs_filename):
+            if os.path.exists(get_template_abspath(filename)):
                 break
             if len(cl.__bases__) > 1:
                 raise Warning('''two or more base classes '''

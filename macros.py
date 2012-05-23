@@ -49,6 +49,11 @@ def indent(text, amount):
     return '\n'.join((amount * ' ' + l if l else '' for l in lines))
 
 
+def get_template_abspath(filename):
+    t = (TEMPLATE_ABSPATH, filename + TEMPLATE_EXTENSION)
+    return os.path.join(*t)
+
+
 def replace_tags(filename, parent_locals):
     '''
     Opens filename.
@@ -57,8 +62,7 @@ def replace_tags(filename, parent_locals):
     '''
     locals().update(parent_locals)
     tags_object = re.compile(TITELOUZE_TAG_PATTERN)
-    abs_filename = TEMPLATE_PATH + filename + TEMPLATE_EXTENSION
-    f = open(abs_filename, 'r')
+    f = open(get_template_abspath(filename), 'r')
     lines = f.readlines()
     f.close()
     out = []
