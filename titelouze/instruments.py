@@ -51,7 +51,6 @@ class Tenore(Group):
         self.add(staff, Lyrics('tenore'))
 
 
-
 class Bass(Group):
     def __init__(self, *args, **kwargs):
         Group.__init__(self, *args, **kwargs)
