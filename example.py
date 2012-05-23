@@ -2,7 +2,6 @@
 # coding: utf-8
 
 from titelouze import *
-from ensembles import *
 
 t = Titelouze()
 t.filename = 'example.ly'
