@@ -33,7 +33,7 @@ class LilyPond:
             del kwargs['verbose']
         command = [self.command]
         command.extend(args)
-        command.extend(('--%s=%s' % (k, kwargs[k]) for k in kwargs))
+        command.extend(('--{}={}'.format(k, kwargs[k]) for k in kwargs))
         command.append(filename)
         p = subprocess.Popen(args=command, stdout=subprocess.PIPE,
             stderr=subprocess.STDOUT, shell=False)

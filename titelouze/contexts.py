@@ -45,7 +45,7 @@ class Context(object):
                 raise e
             if len(contexts) > 1:
                 raise Exception('''two or more contexts have '''
-                                '''the attribute %s''' % attr)
+                                '''the attribute {}'''.format(attr))
             return contexts[0]
 
     def add(self, *contexts):
@@ -61,7 +61,7 @@ class Context(object):
 
     def output_instance(self):
         if self.instance_name:
-            return '= "%s"' % self.instance_name
+            return '= "{}"'.format(self.instance_name)
         return ''
 
     def output_properties(self):
@@ -94,7 +94,7 @@ class Context(object):
                 break
             if len(cl.__bases__) > 1:
                 raise Warning('''two or more base classes '''
-                              '''for this class : %s''' % cl)
+                              '''for this class : {}'''.format(cl))
             cl = cl.__bases__[0]
         out = replace_tags(filename, locals())
         return out
@@ -135,8 +135,8 @@ class Group(Context):
 
     def __setattr__(self, name, value):
         if name == 'properties':
-            raise AttributeError('''"Group" is a fake context, '''
-                                 '''one cannot use "%s" with it.''' % name)
+            raise AttributeError('''"Group" is a fake context, one '''
+                                 '''cannot use "{}" with it.'''.format(name))
         return Context.__setattr__(self, name, value)
 
     def content(self):

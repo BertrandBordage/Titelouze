@@ -32,10 +32,10 @@ def py2scm(py):
         else:
             return '##f'
     if isinstance(py, int) or isinstance(py, float):
-        return '#%s' % py
+        return '#{}'.format(py)
     if isinstance(py, str):
-        return '#"%s"' % py
-    raise Exception('unable to convert "%s" to Scheme.' % py)
+        return '#"{}"'.format(py)
+    raise Exception('unable to convert "{}" to Scheme.'.format(py))
 
 
 def indent(text, amount):
@@ -69,20 +69,21 @@ def replace_tags(filename, parent_locals):
     for line in lines:
         tags = tags_object.split(line)
         first = tags[0]
-        line_out = ''
+        line_out = []
         for i, tag in enumerate(tags):
             if i % 2:
-                attrs = re.split('\.', tag)
+                attrs = tag.split('.')
                 var = locals()[attrs[0]]
                 for attr in attrs[1:]:
                     var = getattr(var, attr)
                 if callable(var):
                     var = var()
                 if var:
-                    line_out += unicode(var)
-            elif not (i == 0 and tag == len(first) * ' '):
-                line_out += tag
-        if first == len(first) * ' ':
+                    line_out.append(unicode(var))
+            elif not (i == 0 and tag is len(first) * ' '):
+                line_out.append(tag)
+        line_out = ''.join(line_out)
+        if first is len(first) * ' ':
             out.append(indent(line_out, len(first)))
         else:
             out.append(line_out)
