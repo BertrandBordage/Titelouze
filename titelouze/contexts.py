@@ -6,8 +6,8 @@ Python implementation of LilyPond contexts.
 
 from settings import *
 from macros import *
+from copy import copy, deepcopy
 import os
-import copy
 
 
 class Context(object):
@@ -44,15 +44,47 @@ class Context(object):
             if not contexts:
                 raise e
             if len(contexts) > 1:
-                raise Exception('''two or more contexts have '''
-                                '''the attribute {}'''.format(attr))
+                raise Exception('''{} contains two or more contexts '''
+                                '''called {}'''.format(self.name, attr))
             return contexts[0]
 
     def copy(self):
-        return copy.deepcopy(self)
+        object = copy(self)
+        object.contexts = copy(self.contexts)
+        try:
+            object.properties = copy(self.properties)
+        except AttributeError:
+            pass
+        return object
+
+    def deepcopy(self):
+        return deepcopy(self)
 
     def add(self, *contexts):
         self.contexts.extend(contexts)
+
+    def remove(self, *contexts):
+        # TODO: Remove inside nested contexts.
+        try:
+            self.contexts.remove(*contexts)
+        except ValueError:
+            raise ValueError('{} not in {}'.format(contexts, self.name))
+
+    def __add__(self, other):
+        object = self.copy()
+        try:
+            object.add(*other)
+        except TypeError:
+            object.add(other)
+        return object
+
+    def __sub__(self, other):
+        object = self.copy()
+        try:
+            object.remove(*other)
+        except TypeError:
+            object.remove(other)
+        return object
 
     def is_simultaneous(self):
         return len(self.contexts) > 1
