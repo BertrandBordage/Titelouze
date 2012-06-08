@@ -2,9 +2,10 @@
 # coding: utf-8
 
 from titelouze import *
+import os.path
 
 t = Titelouze()
-t.filename = 'example.ly'
+t.filename = os.path.splitext(__file__)[0] + '.ly'
 score1 = Score()
 score1.header['title'] = 'Concerto'
 score2 = Score()
@@ -19,10 +20,9 @@ contralto = Contralto()
 contralto.staff = 'd b c'
 contralto.lyrics = u'ré si do'
 score2.add(contralto)
-part = BookPart()
+part = BookPart(Choir())
 t.book.add(part)
-choir = Choir()
-part.add(choir)
+choir = part.choir
 choir.soprano.staff = 'cis8 ' * 32
 choir.soprano.lyrics = 'hi -- hi ' * 16
 choir.contralto.staff = 'a8 ' * 32

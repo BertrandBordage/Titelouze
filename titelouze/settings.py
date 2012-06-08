@@ -5,9 +5,9 @@ Global variables.
 Some (especially pathes) are more likely to be changed than others.
 '''
 
-import os
+import os.path
 
-TITELOUZE_TAG_PATTERN = '{{[ ]*(\S+)[ ]*}}'
+TITELOUZE_TAG_PATTERN = r'{{[ ]*(\S+)[ ]*}}'
 LILYPOND_PATH = ''
 LILYPOND_BINARY = 'lilypond'
 LILYPOND_VERSION_PATTERN = 'GNU LilyPond ([0-9\.]+)'

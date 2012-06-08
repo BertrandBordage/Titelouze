@@ -28,12 +28,10 @@ class LilyPond:
         Returns the output.
         launch([...], verbose=True) will flush the output to stdout.
         '''
-        verbose = kwargs.get('verbose', False)
-        if verbose:
-            del kwargs['verbose']
+        verbose = kwargs.pop('verbose', False)
         command = [self.command]
         command.extend(args)
-        command.extend(('--{}={}'.format(k, kwargs[k]) for k in kwargs))
+        command.extend('--{}={}'.format(k, kwargs[k]) for k in kwargs)
         command.append(filename)
         p = subprocess.Popen(args=command, stdout=subprocess.PIPE,
             stderr=subprocess.STDOUT, shell=False)
@@ -59,11 +57,11 @@ class LilyPond:
 
 class Titelouze:
     lilypond = LilyPond()
-    book = Book()
     filename = 'out.ly'
 
     def __init__(self):
         self.lilypond_version = self.lilypond.get_version()
+        self.book = Book()
 
     def launch_lilypond(self, *args, **kwargs):
         self.lilypond.launch(self.filename, *args, **kwargs)

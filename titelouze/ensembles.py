@@ -10,6 +10,6 @@ from instruments import *
 
 class Choir(ChoirStaff):
     def __init__(self):
-        ChoirStaff.__init__(self)
+        super(Choir, self).__init__()
         self.add(Soprano(), Contralto(), Tenore(), Bass())
     instance_name = 'choir'

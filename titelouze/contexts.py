@@ -7,6 +7,7 @@ Python implementation of LilyPond contexts.
 from settings import *
 from macros import *
 import os
+import copy
 
 
 class Context(object):
@@ -15,11 +16,11 @@ class Context(object):
     instance_name = None
     mode = ''
 
-    def __init__(self, associated=None, **kwargs):
-        self.contexts = []
+    def __init__(self, *contexts, **kwargs):
+        self.contexts = list(contexts)
+        self.associated_instance = kwargs.pop('associated', None)
         try:
-            self.properties = {}
-            self.properties.update(kwargs)
+            self.properties = kwargs
         except AttributeError:
             pass
         self.functions = []
@@ -27,18 +28,17 @@ class Context(object):
             self.instance_name = self.properties['instrumentName'].lower()
         except (KeyError, AttributeError):
             pass
-        self.associated_instance = associated
 
     def __setattr__(self, attr, value):
         contexts = find_contexts(self, attr)
         if not contexts:
-            return object.__setattr__(self, attr, value)
+            return super(Context, self).__setattr__(attr, value)
         for context in contexts:
-            context.__setattr__('content', value)
+            context.content = value
 
     def __getattribute__(self, attr):
         try:
-            return object.__getattribute__(self, attr)
+            return super(Context, self).__getattribute__(attr)
         except AttributeError, e:
             contexts = find_contexts(self, attr)
             if not contexts:
@@ -47,6 +47,9 @@ class Context(object):
                 raise Exception('''two or more contexts have '''
                                 '''the attribute {}'''.format(attr))
             return contexts[0]
+
+    def copy(self):
+        return copy.deepcopy(self)
 
     def add(self, *contexts):
         self.contexts.extend(contexts)
@@ -84,7 +87,7 @@ class Context(object):
             group = Group()
             group.add(*self.contexts)
             return group.output()
-        return ''.join((c.output() for c in self.contexts))
+        return ''.join(c.output() for c in self.contexts)
 
     def output(self):
         cl = self.__class__
@@ -112,7 +115,7 @@ class Lyrics(Context):
     mode = r'\lyricmode '
 
     def __init__(self, *args, **kwargs):
-        Context.__init__(self, *args, **kwargs)
+        super(Lyrics, self).__init__(*args, **kwargs)
         if self.associated_instance:
             self.properties.update(associatedVoice=self.associated_instance)
 
@@ -131,16 +134,16 @@ class Group(Context):
     name = 'Group'
 
     def __init__(self, *args, **kwargs):
-        Context.__init__(self, *args, **kwargs)
+        super(Group, self).__init__(*args, **kwargs)
 
     def __setattr__(self, name, value):
         if name == 'properties':
             raise AttributeError('''"Group" is a fake context, one '''
                                  '''cannot use "{}" with it.'''.format(name))
-        return Context.__setattr__(self, name, value)
+        return super(Group, self).__setattr__(name, value)
 
     def content(self):
-        return ''.join((c.output() for c in self.contexts))
+        return ''.join(c.output() for c in self.contexts)
 
 
 class StaffGroup(Context):
@@ -159,7 +162,7 @@ class StructContext(Context):
     allow_simultaneous_music = False
 
     def __init__(self, *args, **kwargs):
-        Context.__init__(self, *args, **kwargs)
+        super(StructContext, self).__init__(*args, **kwargs)
         self.header = {}
 
     def output_header(self):
@@ -174,11 +177,11 @@ class BookPart(StructContext):
     name = 'BookPart'
 
     def content(self):
-        return ''.join((c.output() for c in self.contexts))
+        return ''.join(c.output() for c in self.contexts)
 
 
 class Book(StructContext):
     name = 'Book'
 
     def content(self):
-        return ''.join((c.output() for c in self.contexts))
+        return ''.join(c.output() for c in self.contexts)

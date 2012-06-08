@@ -15,7 +15,7 @@ from contexts import *
 
 class VoiceStaff(Group):
     def __init__(self, *args, **kwargs):
-        Group.__init__(self, *args, **kwargs)
+        super(VoiceStaff, self).__init__(*args, **kwargs)
         self.add(Staff(instrumentName='Voice',
                        shortInstrumentName='Vo.',
                        autoBeaming=False),
@@ -24,7 +24,7 @@ class VoiceStaff(Group):
 
 class Soprano(Group):
     def __init__(self, *args, **kwargs):
-        Group.__init__(self, *args, **kwargs)
+        super(Soprano, self).__init__(*args, **kwargs)
         staff = Staff(instrumentName='Soprano',
                       shortInstrumentName='S.',
                       autoBeaming=False)
@@ -34,7 +34,7 @@ class Soprano(Group):
 
 class Contralto(Group):
     def __init__(self, *args, **kwargs):
-        Group.__init__(self, *args, **kwargs)
+        super(Contralto, self).__init__(*args, **kwargs)
         self.add(Staff(instrumentName='Contralto',
                        shortInstrumentName='A.',
                        autoBeaming=False),
@@ -43,7 +43,7 @@ class Contralto(Group):
 
 class Tenore(Group):
     def __init__(self, *args, **kwargs):
-        Group.__init__(self, *args, **kwargs)
+        super(Tenore, self).__init__(*args, **kwargs)
         staff = Staff(instrumentName='Tenore',
                       shortInstrumentName='T.',
                       autoBeaming=False)
@@ -53,7 +53,7 @@ class Tenore(Group):
 
 class Bass(Group):
     def __init__(self, *args, **kwargs):
-        Group.__init__(self, *args, **kwargs)
+        super(Bass, self).__init__(*args, **kwargs)
         staff = Staff(instrumentName='Bass',
                       shortInstrumentName='B.',
                       autoBeaming=False)
@@ -66,7 +66,7 @@ class Bass(Group):
 
 class Violin(Staff):
     def __init__(self):
-        Staff.__init__(self)
+        super(Violin, self).__init__()
         self.properties.update(instrumentName='Violin',
                                shortInstrumentName='Vl.')
     instance_name = 'violin'
@@ -74,7 +74,7 @@ class Violin(Staff):
 
 class Viola(Staff):
     def __init__(self):
-        Staff.__init__(self)
+        super(Viola, self).__init__()
         self.properties.update(instrumentName='Viola',
                                shortInstrumentName='Va.')
         self.functions.append(r'\clef alto')
@@ -83,7 +83,7 @@ class Viola(Staff):
 
 class Violoncello(Staff):
     def __init__(self):
-        Staff.__init__(self)
+        super(Violoncello, self).__init__()
         self.properties.update(instrumentName='Violoncello',
                                shortInstrumentName='Vc.')
         self.functions.append(r'\clef F')
@@ -92,7 +92,7 @@ class Violoncello(Staff):
 
 class Contrabass(Staff):
     def __init__(self):
-        Staff.__init__(self)
+        super(Contrabass, self).__init__()
         self.properties.update(instrumentName='Contrabass',
                                shortInstrumentName='Cb.')
         self.functions.append(r'\clef F_8')
@@ -111,13 +111,13 @@ class RightHand(Staff):
 
 class LeftHand(Staff):
     def __init__(self):
-        Staff.__init__(self)
+        super(LeftHand, self).__init__()
         self.functions.append(r'\clef F')
 
 
 class Keyboard(PianoStaff):
     def __init__(self):
-        PianoStaff.__init__(self)
+        super(Keyboard, self).__init__()
         self.add(RightHand(), Dynamics(), LeftHand())
         self.properties.update(instrumentName='Keyboard',
                                shortInstrumentName='K.')
@@ -126,7 +126,7 @@ class Keyboard(PianoStaff):
 
 class Keyboards(Keyboard):
     def __init__(self):
-        Keyboard.__init__(self)
+        super(Keyboards, self).__init__()
         self.properties.update(instrumentName='Keyboards',
                                shortInstrumentName='Ks.')
     instance_name = 'keyboards'
@@ -134,7 +134,7 @@ class Keyboards(Keyboard):
 
 class Piano(Keyboard):
     def __init__(self):
-        Keyboard.__init__(self)
+        super(Piano, self).__init__()
         self.properties.update(instrumentName='Piano',
                                shortInstrumentName='Pi.')
     instance_name = 'piano'
@@ -142,7 +142,7 @@ class Piano(Keyboard):
 
 class Harpsichord(Keyboard):
     def __init__(self):
-        Keyboard.__init__(self)
+        super(Harpsichord, self).__init__()
         self.properties.update(instrumentName='Harpsichord',
                                shortInstrumentName='Hc.')
     instance_name = 'harpsichord'
@@ -150,7 +150,7 @@ class Harpsichord(Keyboard):
 
 class Pedal(Staff):
     def __init__(self):
-        Staff.__init__(self)
+        super(Pedal, self).__init__()
         self.properties.update(instrumentName='Pedal',
                                shortInstrumentName='Pe.')
         self.functions.append(r'\clef F')
@@ -159,6 +159,6 @@ class Pedal(Staff):
 
 class Organ(Group):
     def __init__(self):
-        Group.__init__(self)
+        super(Organ, self).__init__()
         self.add(Keyboards(), Pedal())
     instance_name = 'organ'
