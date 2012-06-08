@@ -9,7 +9,7 @@ from instruments import *
 
 
 class Choir(ChoirStaff):
-    def __init__(self):
-        super(Choir, self).__init__()
+    def __init__(self, *args, **kwargs):
+        super(Choir, self).__init__(*args, **kwargs)
         self.add(Soprano(), Contralto(), Tenore(), Bass())
     instance_name = 'choir'

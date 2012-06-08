@@ -116,9 +116,7 @@ class Context(object):
             out = replace_tags('empty-context', locals())
             return out
         if self.is_simultaneous() and not self.allow_simultaneous_music:
-            group = Group()
-            group.add(*self.contexts)
-            return group.output()
+            return Group(*self.contexts).output()
         return ''.join(c.output() for c in self.contexts)
 
     def output(self):
