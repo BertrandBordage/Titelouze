@@ -30,7 +30,7 @@ class Context(object):
             pass
 
     def __setattr__(self, attr, value):
-        contexts = find_contexts(self, attr)
+        contexts = self.find_contexts(attr)
         if not contexts:
             return super(Context, self).__setattr__(attr, value)
         for context in contexts:
@@ -40,12 +40,12 @@ class Context(object):
         try:
             return super(Context, self).__getattribute__(attr)
         except AttributeError, e:
-            contexts = find_contexts(self, attr)
+            contexts = self.find_contexts(attr)
             if not contexts:
                 raise e
             if len(contexts) > 1:
-                raise Exception('''{} contains two or more contexts '''
-                                '''called {}'''.format(self.name, attr))
+                raise Exception('{} contains two or more contexts '
+                                'called {}'.format(self.name, attr))
             return contexts[0]
 
     def copy(self):
@@ -85,6 +85,11 @@ class Context(object):
         except TypeError:
             object.remove(other)
         return object
+
+    def find_contexts(self, name):
+        if hasattr(self, 'contexts'):
+            contexts = filter(lambda c: context_exists(c, name), self.contexts)
+            return contexts
 
     def is_simultaneous(self):
         return len(self.contexts) > 1
@@ -126,8 +131,8 @@ class Context(object):
             if os.path.exists(get_template_abspath(filename)):
                 break
             if len(cl.__bases__) > 1:
-                raise Warning('''two or more base classes '''
-                              '''for this class : {}'''.format(cl))
+                raise Warning('two or more base classes '
+                              'for this class : {}'.format(cl))
             cl = cl.__bases__[0]
         out = replace_tags(filename, locals())
         return out
@@ -168,8 +173,8 @@ class Group(Context):
 
     def __setattr__(self, name, value):
         if name == 'properties':
-            raise AttributeError('''"Group" is a fake context, one '''
-                                 '''cannot use "{}" with it.'''.format(name))
+            raise AttributeError('"Group" is a fake context, one '
+                                 'cannot use "{}" with it.'.format(name))
         return super(Group, self).__setattr__(name, value)
 
     def content(self):

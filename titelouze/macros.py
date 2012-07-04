@@ -13,12 +13,6 @@ def context_exists(context, name):
     return (context.__class__.__name__.lower() or context.name.lower()) == name
 
 
-def find_contexts(obj, name):
-    if 'contexts' in obj.__dict__:
-        contexts = filter(lambda c: context_exists(c, name), obj.contexts)
-        return contexts
-
-
 def py2scm(py):
     '''
     Converts python values into a string of the corresponding Scheme value.
@@ -39,7 +33,7 @@ def isblank(str):
     '''
     Returns True if str is empty or contains spaces only.
     '''
-    return all(c is ' ' for c in str)
+    return all(c == ' ' for c in str)
 
 
 def indent(text, amount):
