@@ -19,15 +19,24 @@ class Context(object):
     def __init__(self, *contexts, **kwargs):
         self.contexts = list(contexts)
         self.associated_instance = kwargs.pop('associated', None)
-        try:
-            self.properties = kwargs
-        except AttributeError:
-            pass
+        self.__properties = kwargs
         self.functions = []
         try:
             self.instance_name = self.properties['instrumentName'].lower()
-        except (KeyError, AttributeError):
+        except KeyError:
             pass
+
+    @property
+    def properties(self):
+        return self.__properties
+
+    @properties.setter
+    def properties(self, value):
+        self.__properties = value
+
+    @properties.deleter
+    def properties(self):
+        del self.__properties
 
     def __setattr__(self, attr, value):
         contexts = self.find_contexts(attr)
@@ -171,11 +180,10 @@ class Group(Context):
     def __init__(self, *args, **kwargs):
         super(Group, self).__init__(*args, **kwargs)
 
-    def __setattr__(self, name, value):
-        if name == 'properties':
-            raise AttributeError('"Group" is a fake context, one '
-                                 'cannot use "{}" with it.'.format(name))
-        return super(Group, self).__setattr__(name, value)
+    @Context.properties.setter
+    def properties(self, value):
+        raise AttributeError('"Group" is a fake context, one '
+                             'cannot set its "properties".')
 
     def content(self):
         return ''.join(c.output() for c in self.contexts)
