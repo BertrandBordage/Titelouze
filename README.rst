@@ -26,8 +26,7 @@ Installation
 ============
 
 1. Install the `Requirements`_
-2. Get the source.
-3. ``sudo ./setup.py install``
+2. ``sudo pip install titelouze``
 
 
 Using

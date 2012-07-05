@@ -5,7 +5,7 @@ from distutils.core import setup
 
 setup(
     name='Titelouze',
-    version='0.1',
+    version='0.1.1',
     author='Bertrand Bordage',
     author_email='bordage.bertrand@gmail.com',
     url='https://github.com/BertrandBordage/Titelouze',
