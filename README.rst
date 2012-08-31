@@ -63,5 +63,5 @@ Maybe : a small user-friendly GUI.
 Contributing
 ============
 
-Any idea would be welcome !  So don't be shy and open an issue if you have
-spotted something odd.
+Any idea would be welcome !  So don't be shy and open an issue if you spotted
+something odd.
