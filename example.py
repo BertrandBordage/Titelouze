@@ -55,7 +55,7 @@ part.add(choir - choir.soprano)
 # 'add' is used because '+' creates a copy of the context.
 # We could use :
 # t.book -= part
-# part += choir1 - choir1.soprano
+# part += choir - choir.soprano
 # t.book += part
 # But it's dirty and uses more code, memory, and execution time.
 
