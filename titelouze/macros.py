@@ -4,6 +4,7 @@
 Useful functions that can't be placed somewhere else.
 '''
 
+from __future__ import unicode_literals
 import re
 import os.path
 from settings import *
@@ -24,7 +25,7 @@ def py2scm(py):
         return '##t' if py else '##f'
     if isinstance(py, int) or isinstance(py, float):
         return '#{}'.format(py)
-    if isinstance(py, str):
+    if isinstance(py, basestring):
         return '#"{}"'.format(py)
     raise Exception('unable to convert "{}" to Scheme.'.format(py))
 
