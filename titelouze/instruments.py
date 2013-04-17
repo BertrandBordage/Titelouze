@@ -106,10 +106,12 @@ class Contrabass(Staff):
 # Keyboards
 
 class RightHand(Staff):
-    pass
+    instance_name = 'right_hand'
 
 
 class LeftHand(Staff):
+    instance_name = 'left_hand'
+
     def __init__(self, *args, **kwargs):
         super(LeftHand, self).__init__(*args, **kwargs)
         self.functions.append(r'\clef F')
