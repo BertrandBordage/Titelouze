@@ -23,7 +23,7 @@ def py2scm(py):
     '''
     if isinstance(py, bool):
         return '##t' if py else '##f'
-    if isinstance(py, int) or isinstance(py, float):
+    if isinstance(py, (int, float)):
         return '#{}'.format(py)
     if isinstance(py, basestring):
         return '#"{}"'.format(py)
@@ -88,7 +88,7 @@ def replace_tags(filename, parent_locals):
     return out
 
 
-def render_properties(props, template_name):
+def render_properties(props, template_name=None):
     '''
     Render 'props' from the templates 'property' and 'template_name'
     '''
@@ -98,6 +98,8 @@ def render_properties(props, template_name):
     for key in props:
         value = py2scm(props[key])
         properties += replace_tags('property', locals())
+    if template_name is None:
+        return properties
     return replace_tags(template_name, locals())
 
 

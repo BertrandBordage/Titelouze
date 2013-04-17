@@ -226,6 +226,12 @@ class BookPart(StructContext):
 class Book(StructContext):
     name = 'Book'
     staff_size = 18
+    paper = {
+        'ragged-last-bottom': False,
+    }
+
+    def paper_properties(self):
+        return render_properties(self.paper)
 
     def content(self):
         return ''.join(c.output() for c in self.contexts)

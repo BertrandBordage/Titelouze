@@ -4,6 +4,7 @@
 
 \paper {
   print-all-headers = ##t
+  {{ self.book.paper_properties }}
 }
 
 {{ self.book }}
