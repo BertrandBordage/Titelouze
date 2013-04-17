@@ -225,6 +225,7 @@ class BookPart(StructContext):
 
 class Book(StructContext):
     name = 'Book'
+    staff_size = 18
 
     def content(self):
         return ''.join(c.output() for c in self.contexts)
